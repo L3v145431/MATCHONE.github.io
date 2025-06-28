@@ -144,6 +144,7 @@
             border-radius: 20px;
             padding: 10px 20px;
             font-size: 1em;
+            font-weight: bold;
             cursor: pointer;
             display: none;
             position: absolute;
@@ -186,7 +187,7 @@
             <div class="column-title">Solutions</div>
         </div>
     </div>
-    <button id="continue-button">Continue (10)</button>
+    <button id="continue-button">Continue [10]</button>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script>
         function loadColumnItems(column, numSquares, columnElement) {
@@ -385,7 +386,7 @@
             let timeLeft = 10;
             const timer = setInterval(() => {
                 timeLeft--;
-                continueButton.textContent = `Continue (${timeLeft})`;
+                continueButton.textContent = `Continue [${timeLeft}]`;
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4';
