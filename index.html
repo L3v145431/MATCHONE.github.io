@@ -17,6 +17,51 @@
             min-height: 100vh;
             box-sizing: border-box;
             position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 4px;
+            width: 49%;
+            height: 12px;
+            margin-bottom: 20px;
+            background-color: transparent;
+        }
+
+        .progress-segment {
+            flex: 1;
+            background-color: #ddd;
+            transition: background-color 0.3s ease;
+            height: 100%;
+        }
+
+        .progress-segment:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .progress-segment:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .progress-segment.filled {
+            background: linear-gradient(to right, #FCD307, #FFBC00);
+        }
+
+        .progress-segment.flashing {
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% {
+                background-color: #ddd;
+            }
+            50% {
+                background-color: rgba(252, 211, 7, 0.7);
+            }
         }
 
         h1 {
@@ -178,6 +223,15 @@
     </style>
 </head>
 <body>
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress-segment filled"></div>
+        <div class="progress-segment filled"></div>
+        <div class="progress-segment flashing"></div>
+        <div class="progress-segment"></div>
+        <div class="progress-segment"></div>
+        <div class="progress-segment"></div>
+        <div class="progress-segment"></div>
+    </div>
     <h1>Match the problems with our solutions.</h1>
     <div class="game-container">
         <div class="column" id="left-column">
@@ -188,6 +242,7 @@
         </div>
     </div>
     <button id="continue-button">Continue [10]</button>
+    <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script>
         function loadColumnItems(column, numSquares, columnElement) {
@@ -246,6 +301,19 @@
             }
         }
 
+        function updateProgressBar() {
+            const segments = document.querySelectorAll(".progress-segment");
+            segments.forEach((segment, index) => {
+                segment.classList.remove('flashing');
+                if (index < correctAnswers) {
+                    segment.classList.add('filled');
+                }
+                if (index === correctAnswers) {
+                    segment.classList.add('flashing');
+                }
+            });
+        }
+
         function setupGame() {
             const leftItems = document.querySelectorAll('#left-column .item');
             const rightItems = document.querySelectorAll('#right-column .item');
@@ -288,7 +356,6 @@
                             const endInnerCircleRect = endInnerCircle.getBoundingClientRect();
                             const endX = endInnerCircleRect.left + endInnerCircleRect.width / 2;
                             const endY = endInnerCircleRect.top + endInnerCircleRect.height / 2;
-
                             if (Math.sqrt(Math.pow(e.clientX - endX, 2) + Math.pow(e.clientY - endY, 2)) <= endInnerCircleRect.width / 2) {
                                 endInnerCircle.style.backgroundColor = '#FCD307';
                             } else {
@@ -314,16 +381,13 @@
                                 currentLine.style.backgroundColor = '#BEE395';
                                 startInnerCircle.style.backgroundColor = '#BEE395';
                                 endInnerCircle.style.backgroundColor = '#BEE395';
-
                                 matchedPairs++;
                                 activeLines.push(currentLine);
-
                                 setTimeout(() => {
                                     currentLine.style.backgroundColor = '#FFBC00';
                                     startInnerCircle.style.backgroundColor = '#FFBC00';
                                     endInnerCircle.style.backgroundColor = '#FFBC00';
                                 }, 2000);
-
                                 startItem.classList.add('matched');
                                 item.classList.add('matched');
 
@@ -335,15 +399,12 @@
                                 currentLine.style.backgroundColor = 'red';
                                 startInnerCircle.style.backgroundColor = 'red';
                                 endInnerCircle.style.backgroundColor = 'red';
-
                                 startItem.classList.add('error');
                                 item.classList.add('error');
-
                                 setTimeout(() => {
                                     startItem.classList.remove('error');
                                     item.classList.remove('error');
                                 }, 500);
-
                                 setTimeout(() => {
                                     currentLine.remove();
                                     startInnerCircle.style.backgroundColor = '#FFBC00';
@@ -353,7 +414,6 @@
                         } else {
                             currentLine.remove();
                         }
-
                         activeLine = null;
                         startItem = null;
                     }
@@ -370,19 +430,33 @@
         }
 
         function celebrate() {
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            const canvas = document.getElementById('confetti-canvas');
+            const myConfetti = confetti.create(canvas, { resize: true, useWorker: true });
+
+            myConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                myConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             }, 500);
             setTimeout(() => {
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                myConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             }, 1000);
+
+            // Update the progress bar to fill the third pill and flash the fourth
+            const segments = document.querySelectorAll(".progress-segment");
+            segments.forEach((segment, index) => {
+                segment.classList.remove('flashing');
+                if (index < 3) {
+                    segment.classList.add('filled');
+                }
+                if (index === 3) {
+                    segment.classList.add('flashing');
+                }
+            });
         }
 
         function showContinueButton() {
             const continueButton = document.getElementById('continue-button');
             continueButton.style.display = 'block';
-
             let timeLeft = 10;
             const timer = setInterval(() => {
                 timeLeft--;
@@ -392,17 +466,19 @@
                     window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4';
                 }
             }, 1000);
-
             continueButton.addEventListener('click', () => {
                 clearInterval(timer);
                 window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4';
             });
         }
 
+        let correctAnswers = 2; // Start with two correct answers to fill the first two segments
+
         window.onload = function() {
             loadColumnItems('left', 3, document.getElementById('left-column'));
             loadColumnItems('right', 3, document.getElementById('right-column'));
             setupGame();
+            updateProgressBar();
         };
     </script>
 </body>
