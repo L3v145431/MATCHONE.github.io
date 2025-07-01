@@ -1,485 +1,434 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Emparejamiento</title>
-    <style>
-        body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            background-color: #FFFFFF;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Juego de Emparejamiento</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+      margin: 0;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+    }
 
-        .progress-bar {
-            display: flex;
-            justify-content: space-between;
-            gap: 4px;
-            width: 49%;
-            height: 12px;
-            margin-bottom: 20px;
-            background-color: transparent;
-        }
+    .matching-wrapper {
+      width: 90vmin;
+      height: 90vmin;
+      max-width: 600px;
+      max-height: 600px;
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      position: relative;
+    }
 
-        .progress-segment {
-            flex: 1;
-            background-color: #ddd;
-            transition: background-color 0.3s ease;
-            height: 100%;
-        }
+    .game-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .progress-segment:first-child {
-            border-top-left-radius: 6px;
-            border-bottom-left-radius: 6px;
-        }
+    .game-header {
+      margin-bottom: 20px;
+    }
 
-        .progress-segment:last-child {
-            border-top-right-radius: 6px;
-            border-bottom-right-radius: 6px;
-        }
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      width: 100%;
+      height: 12px;
+      margin-bottom: 10px;
+    }
 
-        .progress-segment.filled {
-            background: linear-gradient(to right, #FCD307, #FFBC00);
-        }
+    .progress-segment {
+      flex: 1;
+      background-color: #ddd;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
 
-        .progress-segment.flashing {
-            animation: flash 1s infinite;
-        }
+    .progress-segment.filled {
+      background: linear-gradient(to right, #FCD307, #FFBC00);
+    }
 
-        @keyframes flash {
-            0%, 100% {
-                background-color: #ddd;
-            }
-            50% {
-                background-color: rgba(252, 211, 7, 0.7);
-            }
-        }
+    .progress-segment.flashing {
+      animation: flash 1s infinite;
+    }
 
-        h1 {
-            color: #000000;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-            text-align: center;
-        }
+    @keyframes flash {
+      0%, 100% { background-color: #ddd; }
+      50% { background-color: rgba(252, 211, 7, 0.7); }
+    }
 
-        .game-container {
-            display: flex;
-            justify-content: center;
-            gap: 200px;
-            width: 100%;
-            max-width: 1000px;
-            flex-wrap: nowrap;
-        }
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 1.8em;
+      color: #000;
+    }
 
-        .column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            flex: 1;
-            min-width: 250px;
-        }
+    .game-body {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 90px;
+    }
 
-        .column-title {
-            font-size: 1.5em;
-            color: #000000;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .column {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .item {
-            position: relative;
-            width: 100%;
-            height: 100px;
-            background-color: #FCD307;
-            border-radius: 40px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            box-sizing: border-box;
-            z-index: 2;
-        }
+    .column-title {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      text-align: center;
+      user-select: none;
+      color: #000;
+    }
 
-        .item img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
+    .item {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      background-color: #FCD307;
+      border-radius: 40px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      z-index: 2;
+    }
 
-        .item-text {
-            font-size: 0.9em;
-            text-align: left;
-            flex: 1;
-        }
+    .item img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
 
-        .circle-container {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
-        }
+    .item-text {
+      font-size: 0.9em;
+      text-align: left;
+      flex: 1;
+    }
 
-        #left-column .circle-container {
-            right: -15px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+    .circle-container {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
 
-        #right-column .circle-container {
-            left: -15px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+    #left-column .circle-container {
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
-        .circle {
-            position: absolute;
-            border-radius: 50%;
-        }
+    #right-column .circle-container {
+      left: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
-        .circle-outer {
-            width: 50px;
-            height: 50px;
-            background-color: #ffffff;
-            border: 3px solid #000000;
-        }
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+    }
 
-        .circle-middle {
-            width: 40px;
-            height: 40px;
-            background-color: #000000;
-        }
+    .circle-outer {
+      width: 34px;
+      height: 34px;
+      background-color: #ffffff;
+      border: 3px solid #000000;
+    }
 
-        .circle-inner {
-            width: 25px;
-            height: 25px;
-            background-color: #FFBC00;
-            transition: background-color 0.5s ease;
-        }
+    .circle-middle {
+      width: 27px;
+      height: 27px;
+      background-color: #000000;
+    }
 
-        .line {
-            position: absolute;
-            height: 4px;
-            z-index: 3;
-            transform-origin: 0 0;
-            transition: background-color 0.5s ease;
-        }
+    .circle-inner {
+      width: 15px;
+      height: 15px;
+      background-color: #FFBC00;
+      transition: background-color 0.5s ease;
+    }
 
-        .error:not(.matched) {
-            animation: shake 0.5s;
-        }
+    .line {
+      position: absolute;
+      height: 4px;
+      z-index: 3;
+      transform-origin: 0 0;
+      transition: background-color 0.5s ease;
+    }
 
-        #continue-button {
-            background-color: #FCD307;
-            color: black;
-            border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            display: none;
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+    .error {
+      animation: shake 0.5s;
+    }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
-        }
+    #continue-button {
+      margin-top: 15px;
+      align-self: center;
+      padding: 10px 25px;
+      border-radius: 20px;
+      background-color: #FCD307;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      position: relative;
+      z-index: 10;
+    }
 
-        @media (max-width: 768px) {
-            .game-container {
-                flex-direction: column;
-                align-items: center;
-            }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
 
-            .item {
-                justify-content: center;
-            }
+    @media (max-width: 768px) {
+      .game-body {
+        flex-direction: column;
+        gap: 20px;
+      }
 
-            #left-column .circle-container,
-            #right-column .circle-container {
-                right: -15px;
-                left: auto;
-            }
-        }
-    </style>
+      .column {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="progress-bar" id="progress-bar">
-        <div class="progress-segment filled"></div>
-        <div class="progress-segment filled"></div>
-        <div class="progress-segment flashing"></div>
-        <div class="progress-segment"></div>
-        <div class="progress-segment"></div>
-        <div class="progress-segment"></div>
-        <div class="progress-segment"></div>
-    </div>
-    <h1>Match the problems with our solutions.</h1>
+  <div class="matching-wrapper">
     <div class="game-container">
+      <div class="game-header">
+        <div class="progress-bar" id="progress-bar">
+          <div class="progress-segment filled"></div>
+          <div class="progress-segment filled"></div>
+          <div class="progress-segment flashing"></div>
+          <div class="progress-segment"></div>
+          <div class="progress-segment"></div>
+          <div class="progress-segment"></div>
+          <div class="progress-segment"></div>
+        </div>
+        <h1>Match the problems with our solutions.</h1>
+      </div>
+      <div class="game-body">
         <div class="column" id="left-column">
-            <div class="column-title">Problems</div>
+          <div class="column-title">Problems</div>
         </div>
         <div class="column" id="right-column">
-            <div class="column-title">Solutions</div>
+          <div class="column-title">Solutions</div>
         </div>
+      </div>
+      <button id="continue-button">Continue [10]</button>
     </div>
-    <button id="continue-button">Continue [10]</button>
-    <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-    <script>
-        function loadColumnItems(column, numSquares, columnElement) {
-            const items = [
-                {
-                    imageSrc: 'https://static.wixstatic.com/media/9c422e_ae732a0ab6da45d5a1112865d70492cc~mv2.png',
-                    text: 'Our online course is outdated and not interactive enough.',
-                    matchId: 3
-                },
-                {
-                    imageSrc: 'https://static.wixstatic.com/media/9c422e_a360c3c02abb4eca9a74cef121975027~mv2.png',
-                    text: 'We need to innovate, but do not know how or where to start.',
-                    matchId: 1
-                },
-                {
-                    imageSrc: 'https://static.wixstatic.com/media/9c422e_bbca18b6889b4c9c8e2f4d63b0598677~mv2.png',
-                    text: 'Our team lacks the skills to stay competitive in the AI era.',
-                    matchId: 2
-                }
-            ];
+  </div>
+  <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+  <script>
+    function getCircleCenter(element) {
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    }
 
-            const solutions = [
-                {
-                    imageSrc: 'https://static.wixstatic.com/media/9c422e_2438abc3559840648506e9c06d2b18a4~mv2.png',
-                    text: 'WeSpark´s AI Product & Service Design and Development',
-                    matchId: 1
-                },
-                {
-                    imageSrc: 'https://static.wixstatic.com/media/9c422e_6b13c04d6ec14d3baa89fb7cf34c6453~mv2.png',
-                    text: 'WeSpark´s future-proof corporate training Courses',
-                    matchId: 2
-                },
-                {
-                    imageSrc: 'https://static.wixstatic.com/media/9c422e_3171991a742f4e1f8bf8adae46be81c5~mv2.png',
-                    text: 'WeSpark´s Next-Gen Learning Design & Education Services.',
-                    matchId: 3
-                }
-            ];
+    function distance(a, b) {
+      return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+    }
 
-            const data = column === 'left' ? items : solutions;
+    function loadColumnItems(column, numSquares, columnElement) {
+      const items = [
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_ae732a0ab6da45d5a1112865d70492cc~mv2.png', text: 'Our online course is outdated and not interactive enough.', matchId: 3 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_a360c3c02abb4eca9a74cef121975027~mv2.png', text: 'We need to innovate, but do not know how or where to start.', matchId: 1 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_bbca18b6889b4c9c8e2f4d63b0598677~mv2.png', text: 'Our team lacks the skills to stay competitive in the AI era.', matchId: 2 }
+      ];
 
-            for (let i = 0; i < numSquares; i++) {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'item';
-                itemElement.dataset.matchId = data[i].matchId;
-                itemElement.innerHTML = `
-                    <img src="${data[i].imageSrc}" alt="Item ${i + 1}">
-                    <div class="item-text">${data[i].text}</div>
-                    <div class="circle-container">
-                        <div class="circle circle-outer"></div>
-                        <div class="circle circle-middle"></div>
-                        <div class="circle circle-inner"></div>
-                    </div>
-                `;
-                columnElement.appendChild(itemElement);
+      const solutions = [
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_2438abc3559840648506e9c06d2b18a4~mv2.png', text: 'WeSpark´s AI Product & Service Design and Development', matchId: 1 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_6b13c04d6ec14d3baa89fb7cf34c6453~mv2.png', text: 'WeSpark´s future-proof corporate training Courses', matchId: 2 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_3171991a742f4e1f8bf8adae46be81c5~mv2.png', text: 'WeSpark´s Next-Gen Learning Design & Education Services.', matchId: 3 }
+      ];
+
+      const data = column === 'left' ? items : solutions;
+      for (let i = 0; i < numSquares; i++) {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.dataset.matchId = data[i].matchId;
+        item.innerHTML = `
+          <img src="${data[i].imageSrc}" alt="">
+          <div class="item-text">${data[i].text}</div>
+          <div class="circle-container">
+            <div class="circle circle-outer"></div>
+            <div class="circle circle-middle"></div>
+            <div class="circle circle-inner"></div>
+          </div>
+        `;
+        columnElement.appendChild(item);
+      }
+    }
+
+    function setupGame() {
+      const allItems = [...document.querySelectorAll('.item')];
+      let activeLine = null;
+      let startItem = null;
+      let matchedPairs = 0;
+
+      allItems.forEach(item => {
+        const circle = item.querySelector('.circle-inner');
+        circle.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          startItem = item;
+          const { x, y } = getCircleCenter(circle);
+
+          activeLine = document.createElement('div');
+          activeLine.className = 'line';
+          activeLine.style.left = `${x}px`;
+          activeLine.style.top = `${y}px`;
+          activeLine.style.width = '0px';
+          activeLine.style.backgroundColor = 'gray';
+          document.body.appendChild(activeLine);
+        });
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!startItem || !activeLine) return;
+        const startCircle = startItem.querySelector('.circle-inner');
+        const { x: startX, y: startY } = getCircleCenter(startCircle);
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const length = Math.sqrt(dx ** 2 + dy ** 2);
+        activeLine.style.width = `${length}px`;
+        activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+      });
+
+      document.addEventListener('mouseup', (e) => {
+        if (!startItem || !activeLine) return;
+
+        const possibleTargets = allItems.filter(item => item !== startItem);
+        const endItem = possibleTargets.find(item => {
+          const targetCircle = item.querySelector('.circle-inner');
+          const center = getCircleCenter(targetCircle);
+          return distance(center, { x: e.clientX, y: e.clientY }) <= targetCircle.offsetWidth / 2;
+        });
+
+        if (endItem) {
+          const startCircle = startItem.querySelector('.circle-inner');
+          const endCircle = endItem.querySelector('.circle-inner');
+          const start = getCircleCenter(startCircle);
+          const end = getCircleCenter(endCircle);
+
+          const dx = end.x - start.x;
+          const dy = end.y - start.y;
+          const len = Math.sqrt(dx ** 2 + dy ** 2);
+
+          activeLine.style.left = `${start.x}px`;
+          activeLine.style.top = `${start.y}px`;
+          activeLine.style.width = `${len}px`;
+          activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+
+          const lineCopy = activeLine;
+
+          if (startItem.dataset.matchId === endItem.dataset.matchId) {
+            lineCopy.style.backgroundColor = '#BEE395';
+            startCircle.style.backgroundColor = '#BEE395';
+            endCircle.style.backgroundColor = '#BEE395';
+
+            setTimeout(() => {
+              lineCopy.style.backgroundColor = '#FFBC00';
+              startCircle.style.backgroundColor = '#FFBC00';
+              endCircle.style.backgroundColor = '#FFBC00';
+            }, 2000);
+
+            matchedPairs++;
+            if (matchedPairs === 3) {
+              document.querySelectorAll('.progress-segment')[2].classList.add('filled');
+              document.querySelectorAll('.progress-segment')[3].classList.add('flashing');
+              confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+              showContinueButton();
             }
-        }
+          } else {
+            lineCopy.style.backgroundColor = 'red';
+            startItem.classList.add('error');
+            endItem.classList.add('error');
+            startCircle.style.backgroundColor = 'red';
+            endCircle.style.backgroundColor = 'red';
 
-        function updateProgressBar() {
-            const segments = document.querySelectorAll(".progress-segment");
-            segments.forEach((segment, index) => {
-                segment.classList.remove('flashing');
-                if (index < correctAnswers) {
-                    segment.classList.add('filled');
-                }
-                if (index === correctAnswers) {
-                    segment.classList.add('flashing');
-                }
-            });
-        }
+            // Guardar referencias locales para evitar errores
+            const sItem = startItem;
+            const eItem = endItem;
+            const sCircle = startCircle;
+            const eCircle = endCircle;
+            const line = lineCopy;
 
-        function setupGame() {
-            const leftItems = document.querySelectorAll('#left-column .item');
-            const rightItems = document.querySelectorAll('#right-column .item');
-            let matchedPairs = 0;
-            let activeLines = [];
-            let activeLine = null;
-            let startItem = null;
-
-            const allItems = [...leftItems, ...rightItems];
-
-            allItems.forEach(item => {
-                item.addEventListener('mousedown', function(e) {
-                    startItem = item;
-                    const center = startItem.querySelector('.circle-middle');
-                    const centerRect = center.getBoundingClientRect();
-                    activeLine = document.createElement('div');
-                    activeLine.className = 'line';
-                    activeLine.style.left = (centerRect.left + centerRect.width / 2) + 'px';
-                    activeLine.style.top = (centerRect.top + centerRect.height / 2) + 'px';
-                    activeLine.style.width = '0px';
-                    activeLine.style.backgroundColor = 'gray';
-                    document.body.appendChild(activeLine);
-                    e.preventDefault();
-                });
-            });
-
-            document.addEventListener('mousemove', function(e) {
-                if (startItem && activeLine) {
-                    const center = startItem.querySelector('.circle-middle');
-                    const centerRect = center.getBoundingClientRect();
-                    const dx = e.clientX - (centerRect.left + centerRect.width / 2);
-                    const dy = e.clientY - (centerRect.top + centerRect.height / 2);
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    activeLine.style.width = distance + 'px';
-                    activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
-
-                    allItems.forEach(item => {
-                        if (item !== startItem) {
-                            const endInnerCircle = item.querySelector('.circle-inner');
-                            const endInnerCircleRect = endInnerCircle.getBoundingClientRect();
-                            const endX = endInnerCircleRect.left + endInnerCircleRect.width / 2;
-                            const endY = endInnerCircleRect.top + endInnerCircleRect.height / 2;
-                            if (Math.sqrt(Math.pow(e.clientX - endX, 2) + Math.pow(e.clientY - endY, 2)) <= endInnerCircleRect.width / 2) {
-                                endInnerCircle.style.backgroundColor = '#FCD307';
-                            } else {
-                                endInnerCircle.style.backgroundColor = '#FFBC00';
-                            }
-                        }
-                    });
-                }
-            });
-
-            allItems.forEach(item => {
-                item.addEventListener('mouseup', function(e) {
-                    if (startItem && activeLine && startItem !== item) {
-                        const currentLine = activeLine;
-                        const startInnerCircle = startItem.querySelector('.circle-inner');
-                        const endInnerCircle = item.querySelector('.circle-inner');
-                        const endInnerCircleRect = endInnerCircle.getBoundingClientRect();
-                        const endX = endInnerCircleRect.left + endInnerCircleRect.width / 2;
-                        const endY = endInnerCircleRect.top + endInnerCircleRect.height / 2;
-
-                        if (Math.sqrt(Math.pow(e.clientX - endX, 2) + Math.pow(e.clientY - endY, 2)) <= endInnerCircleRect.width / 2) {
-                            if (startItem.dataset.matchId === item.dataset.matchId) {
-                                currentLine.style.backgroundColor = '#BEE395';
-                                startInnerCircle.style.backgroundColor = '#BEE395';
-                                endInnerCircle.style.backgroundColor = '#BEE395';
-                                matchedPairs++;
-                                activeLines.push(currentLine);
-                                setTimeout(() => {
-                                    currentLine.style.backgroundColor = '#FFBC00';
-                                    startInnerCircle.style.backgroundColor = '#FFBC00';
-                                    endInnerCircle.style.backgroundColor = '#FFBC00';
-                                }, 2000);
-                                startItem.classList.add('matched');
-                                item.classList.add('matched');
-
-                                if (matchedPairs === Math.min(leftItems.length, rightItems.length)) {
-                                    celebrate();
-                                    showContinueButton();
-                                }
-                            } else {
-                                currentLine.style.backgroundColor = 'red';
-                                startInnerCircle.style.backgroundColor = 'red';
-                                endInnerCircle.style.backgroundColor = 'red';
-                                startItem.classList.add('error');
-                                item.classList.add('error');
-                                setTimeout(() => {
-                                    startItem.classList.remove('error');
-                                    item.classList.remove('error');
-                                }, 500);
-                                setTimeout(() => {
-                                    currentLine.remove();
-                                    startInnerCircle.style.backgroundColor = '#FFBC00';
-                                    endInnerCircle.style.backgroundColor = '#FFBC00';
-                                }, 2000);
-                            }
-                        } else {
-                            currentLine.remove();
-                        }
-                        activeLine = null;
-                        startItem = null;
-                    }
-                });
-            });
-
-            document.addEventListener('mouseup', function() {
-                if (activeLine && !activeLines.includes(activeLine)) {
-                    activeLine.remove();
-                }
-                activeLine = null;
-                startItem = null;
-            });
-        }
-
-        function celebrate() {
-            const canvas = document.getElementById('confetti-canvas');
-            const myConfetti = confetti.create(canvas, { resize: true, useWorker: true });
-
-            myConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
-                myConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            }, 500);
-            setTimeout(() => {
-                myConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            }, 1000);
+              sCircle.style.backgroundColor = '#FFBC00';
+              eCircle.style.backgroundColor = '#FFBC00';
 
-            // Update the progress bar to fill the third pill and flash the fourth
-            const segments = document.querySelectorAll(".progress-segment");
-            segments.forEach((segment, index) => {
-                segment.classList.remove('flashing');
-                if (index < 3) {
-                    segment.classList.add('filled');
-                }
-                if (index === 3) {
-                    segment.classList.add('flashing');
-                }
-            });
+              if (sItem) sItem.classList.remove('error');
+              if (eItem) eItem.classList.remove('error');
+
+              if (line && line.parentElement) {
+                line.parentElement.removeChild(line);
+              }
+            }, 2000);
+          }
+        } else {
+          activeLine.remove();
         }
 
-        function showContinueButton() {
-            const continueButton = document.getElementById('continue-button');
-            continueButton.style.display = 'block';
-            let timeLeft = 10;
-            const timer = setInterval(() => {
-                timeLeft--;
-                continueButton.textContent = `Continue [${timeLeft}]`;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4';
-                }
-            }, 1000);
-            continueButton.addEventListener('click', () => {
-                clearInterval(timer);
-                window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4';
-            });
+        activeLine = null;
+        startItem = null;
+      });
+    }
+
+    function showContinueButton() {
+      const btn = document.getElementById('continue-button');
+      btn.style.display = 'block';
+      let countdown = 10;
+      const interval = setInterval(() => {
+        countdown--;
+        btn.textContent = `Continue [${countdown}]`;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4'';
         }
+      }, 1000);
+      btn.addEventListener('click', () => {
+        clearInterval(interval);
+        window.location.href = 'https://levi5171.wixstudio.com/my-site-1/blank-4'';
+      });
+    }
 
-        let correctAnswers = 2; // Start with two correct answers to fill the first two segments
-
-        window.onload = function() {
-            loadColumnItems('left', 3, document.getElementById('left-column'));
-            loadColumnItems('right', 3, document.getElementById('right-column'));
-            setupGame();
-            updateProgressBar();
-        };
-    </script>
+    window.onload = () => {
+      loadColumnItems('left', 3, document.getElementById('left-column'));
+      loadColumnItems('right', 3, document.getElementById('right-column'));
+      setupGame();
+    };
+  </script>
 </body>
 </html>
