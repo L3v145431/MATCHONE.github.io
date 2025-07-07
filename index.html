@@ -2,30 +2,94 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Juego de Emparejamiento</title>
   <style>
-    body {
-      font-family: Helvetica, sans-serif; /* Cambiado a Helvetica */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Helvetica, sans-serif;
+    }
+    .scaling-container {
+      width: 100vw;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #e2e2e2;
+    }
+    .content {
+      transform-origin: center center;
+      transform: scale(var(--scale));
+    }
+    :root {
+      --scale: 1;
+      --global_title_color: #FFFFFF;
+      --global_background_color: #e2e2e2;
+      --global_button_text_color: #000000;
+      --global_button_color_main: #FCD307;
+      --global_button_color_secondary: #FFD700;
+      --global_color_frames: #808080;
+      --global_color_soft: #F4A460;
+      --global_color_pass: #90EE90;
+      --global_color_fail: #FFA07A;
+      --global_text_color: #000000;
+    }
+    @media (min-width: 1025px) {
+      :root {
+        --scale: 1.2;
+      }
+      .item-text {
+        font-size: 0.7rem;
+      }
+      .column-title {
+        font-size: 1rem;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+    @media (max-width: 1024px) and (min-width: 768px) {
+      :root {
+        --scale: 1;
+      }
+    }
+    @media (max-width: 767px) {
+      :root {
+        --scale: 0.8;
+      }
+      .item-text {
+        font-size: 0.4rem;
+      }
+      .column-title {
+        font-size: 0.7rem;
+      }
+      h1 {
+        font-size: 0.9rem;
+      }
+    }
+    body {
+      font-family: Helvetica, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--global_background_color);
       margin: 0;
-      padding: 10px;
+      padding: 0.2rem;
       height: 100vh;
       box-sizing: border-box;
     }
     .matching-wrapper {
-      width: 1500px;
-      height: 80vmin;
+      width: 95%;
       max-width: 620px;
+      height: 80vmin;
       max-height: 4000px;
-      background-color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      padding: 15px;
+      background-color: var(--global_title_color);
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       box-sizing: border-box;
+      padding: 5rem;
       display: flex;
       flex-direction: column;
       user-select: none;
@@ -37,43 +101,43 @@
       flex-direction: column;
     }
     .game-header {
-      margin-bottom: 15px;
+      margin-bottom: 4rem;
     }
     .progress-bar {
       display: flex;
       justify-content: space-between;
-      gap: 3px;
+      gap: 0.1rem;
       width: 100%;
-      height: 9px;
-      margin-bottom: 8px;
+      height: 0.3rem;
+      margin-bottom: 2rem;
     }
     .progress-segment {
       flex: 1;
-      background-color: #ddd;
-      border-radius: 4.5px;
+      background-color: var(--global_color_frames);
+      border-radius: 0.2rem;
       transition: background-color 0.3s ease;
     }
     .progress-segment.filled {
-      background: linear-gradient(to right, #FCD307, #FFBC00);
+      background: linear-gradient(to right, var(--global_button_color_main), var(--global_button_color_secondary));
     }
     .progress-segment.flashing {
       animation: flash 1s infinite;
     }
     @keyframes flash {
-      0%, 100% { background-color: #ddd; }
+      0%, 100% { background-color: var(--global_color_frames); }
       50% { background-color: rgba(252, 211, 7, 0.7); }
     }
     h1 {
       margin: 0;
       text-align: center;
-      font-size: 1.4em;
-      color: #000;
+      font-size: 1rem;
+      color: var(--global_text_color);
     }
     .game-body {
       flex: 1;
       display: flex;
       justify-content: space-between;
-      gap: 120px;
+      gap: 4rem;
     }
     .column {
       width: 45%;
@@ -81,37 +145,37 @@
       flex-direction: column;
     }
     .column-title {
-      font-size: 1.2em;
-      margin-bottom: 15px;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
       text-align: center;
       user-select: none;
-      color: #000;
+      color: var(--global_text_color);
     }
     .item {
       position: relative;
       width: 100%;
-      height: 70px;
-      background-color: #FCD307;
-      border-radius: 30px;
+      height: 16%;
+      background-color: var(--global_button_color_main);
+      border-radius: 1.2rem;
       display: flex;
       justify-content: flex-start;
       align-items: center;
       cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-      padding: 7px;
+      box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
+      padding: 0.2rem;
       box-sizing: border-box;
-      margin-bottom: 15px;
+      margin-bottom: 0.3rem;
       z-index: 2;
     }
     .item img {
-      width: 50px;
-      height: 50px;
+      width: 1.6rem;
+      height: 1.6rem;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 7px;
+      margin-right: 0.2rem;
     }
     .item-text {
-      font-size: 0.7em;
+      font-size: 0.5rem;
       text-align: left;
       flex: 1;
     }
@@ -123,12 +187,12 @@
       z-index: 1;
     }
     #left-column .circle-container {
-      right: -10px;
+      right: -0.4rem;
       top: 50%;
       transform: translateY(-50%);
     }
     #right-column .circle-container {
-      left: -10px;
+      left: -0.4rem;
       top: 50%;
       transform: translateY(-50%);
     }
@@ -138,25 +202,25 @@
       cursor: pointer;
     }
     .circle-outer {
-      width: 24px;
-      height: 24px;
-      background-color: #ffffff;
-      border: 2px solid #000000;
+      width: 1.3rem;
+      height: 1.3rem;
+      background-color: var(--global_title_color);
+      border: 0.1rem solid var(--global_text_color);
     }
     .circle-middle {
-      width: 18px;
-      height: 18px;
-      background-color: #000000;
+      width: 0.9rem;
+      height: 0.9rem;
+      background-color: var(--global_text_color);
     }
     .circle-inner {
-      width: 10px;
-      height: 10px;
-      background-color: #FFBC00;
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: var(--global_button_color_secondary);
       transition: background-color 0.5s ease;
     }
     .line {
       position: absolute;
-      height: 3px;
+      height: 0.2rem;
       z-index: 3;
       transform-origin: 0 0;
       transition: background-color 0.5s ease;
@@ -165,63 +229,71 @@
       animation: shake 0.5s;
     }
     #continue-button {
-      margin-top: 10px;
+      margin-top: 0.3rem;
       align-self: center;
-      padding: 7px 18px;
-      border-radius: 15px;
-      background-color: #FCD307;
+      padding: 0.2rem 0.7rem;
+      border-radius: 0.6rem;
+      background-color: var(--global_button_color_main);
       border: none;
       font-weight: bold;
       cursor: pointer;
       display: none;
       position: relative;
       z-index: 10;
+      color: var(--global_button_text_color);
+      font-size: 0.6rem;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-7px); }
-      40%, 80% { transform: translateX(7px); }
-    }
-    @media (max-width: 768px) {
-      .game-body {
-        flex-direction: column;
-        gap: 15px;
-      }
-      .column {
-        width: 100%;
-      }
+      20%, 60% { transform: translateX(-0.2rem); }
+      40%, 80% { transform: translateX(0.2rem); }
     }
   </style>
 </head>
 <body>
-  <div class="matching-wrapper">
-    <div class="game-container">
-      <div class="game-header">
-        <div class="progress-bar" id="progress-bar">
-          <div class="progress-segment filled"></div>
-          <div class="progress-segment filled"></div>
-          <div class="progress-segment flashing"></div>
-          <div class="progress-segment"></div>
-          <div class="progress-segment"></div>
-          <div class="progress-segment"></div>
-          <div class="progress-segment"></div>
+  <div class="scaling-container">
+    <div class="content">
+      <div class="matching-wrapper">
+        <div class="game-container">
+          <div class="game-header">
+            <div class="progress-bar" id="progress-bar">
+              <div class="progress-segment filled"></div>
+              <div class="progress-segment filled"></div>
+              <div class="progress-segment flashing"></div>
+              <div class="progress-segment"></div>
+              <div class="progress-segment"></div>
+              <div class="progress-segment"></div>
+            </div>
+            <h1>Match the problems with our solutions.</h1>
+          </div>
+          <div class="game-body">
+            <div class="column" id="left-column">
+              <div class="column-title">Problems</div>
+            </div>
+            <div class="column" id="right-column">
+              <div class="column-title">Solutions</div>
+            </div>
+          </div>
+          <button id="continue-button">Continue [10]</button>
         </div>
-        <h1>Match the problems with our solutions.</h1>
       </div>
-      <div class="game-body">
-        <div class="column" id="left-column">
-          <div class="column-title">Problems</div>
-        </div>
-        <div class="column" id="right-column">
-          <div class="column-title">Solutions</div>
-        </div>
-      </div>
-      <button id="continue-button">Continue [10]</button>
+      <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
     </div>
   </div>
-  <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
   <script>
+    function adjustScale() {
+      const scalingContainer = document.querySelector('.scaling-container');
+      const content = document.querySelector('.content');
+      const scale = Math.min(
+        scalingContainer.clientWidth / content.scrollWidth,
+        scalingContainer.clientHeight / content.scrollHeight
+      );
+      document.documentElement.style.setProperty('--scale', scale);
+    }
+    window.addEventListener('resize', adjustScale);
+    window.addEventListener('load', adjustScale);
+
     function getCircleCenter(element) {
       const rect = element.getBoundingClientRect();
       return {
@@ -248,6 +320,7 @@
       ];
 
       const data = column === 'left' ? items : solutions;
+
       for (let i = 0; i < numSquares; i++) {
         const item = document.createElement('div');
         item.className = 'item';
@@ -275,45 +348,50 @@
       allItems.forEach(item => {
         const circles = item.querySelectorAll('.circle');
         circles.forEach(circle => {
-          circle.addEventListener('mousedown', (e) => {
-            if (item.dataset.connected === "true") return;
-            e.stopPropagation();
-            startItem = item;
-            const { x, y } = getCircleCenter(circle);
-
-            activeLine = document.createElement('div');
-            activeLine.className = 'line';
-            activeLine.style.left = `${x}px`;
-            activeLine.style.top = `${y}px`;
-            activeLine.style.width = '0px';
-            activeLine.style.backgroundColor = 'gray';
-            document.body.appendChild(activeLine);
-          });
+          circle.addEventListener('mousedown', handleCircleDown);
+          circle.addEventListener('touchstart', handleCircleDown, { passive: false });
         });
       });
 
-      document.addEventListener('mousemove', (e) => {
+      function handleCircleDown(e) {
+        if (e.target.closest('.item').dataset.connected === "true") return;
+        e.preventDefault();
+        startItem = e.target.closest('.item');
+        const circle = e.target.closest('.circle');
+        const { x, y } = getCircleCenter(circle);
+        activeLine = document.createElement('div');
+        activeLine.className = 'line';
+        activeLine.style.left = `${x}px`;
+        activeLine.style.top = `${y}px`;
+        activeLine.style.width = '0px';
+        activeLine.style.backgroundColor = 'gray';
+        document.body.appendChild(activeLine);
+      }
+
+      function handleMove(e) {
         if (!startItem || !activeLine) return;
         const startCircle = startItem.querySelector('.circle-inner');
         const { x: startX, y: startY } = getCircleCenter(startCircle);
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
         const length = Math.sqrt(dx ** 2 + dy ** 2);
         activeLine.style.width = `${length}px`;
         activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
-      });
+      }
 
-      document.addEventListener('mouseup', (e) => {
+      function handleEnd(e) {
         if (!startItem || !activeLine) return;
-
         const possibleTargets = allItems.filter(item =>
           item !== startItem && item.dataset.connected !== "true"
         );
-
+        const clientX = e.clientX || e.changedTouches[0].clientX;
+        const clientY = e.clientY || e.changedTouches[0].clientY;
         const endItem = possibleTargets.find(item => {
           const targetCircle = item.querySelector('.circle-outer');
           const center = getCircleCenter(targetCircle);
-          return distance(center, { x: e.clientX, y: e.clientY }) <= targetCircle.offsetWidth / 2;
+          return distance(center, { x: clientX, y: clientY }) <= targetCircle.offsetWidth / 2;
         });
 
         if (endItem) {
@@ -321,33 +399,27 @@
           const endCircle = endItem.querySelector('.circle-inner');
           const start = getCircleCenter(startCircle);
           const end = getCircleCenter(endCircle);
-
           const dx = end.x - start.x;
           const dy = end.y - start.y;
           const len = Math.sqrt(dx ** 2 + dy ** 2);
-
           activeLine.style.left = `${start.x}px`;
           activeLine.style.top = `${start.y}px`;
           activeLine.style.width = `${len}px`;
           activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
-
           const lineCopy = activeLine;
 
           if (startItem.dataset.matchId === endItem.dataset.matchId) {
             lineCopy.style.backgroundColor = '#BEE395';
             startCircle.style.backgroundColor = '#BEE395';
             endCircle.style.backgroundColor = '#BEE395';
-
             setTimeout(() => {
               lineCopy.style.backgroundColor = '#FFBC00';
               startCircle.style.backgroundColor = '#FFBC00';
               endCircle.style.backgroundColor = '#FFBC00';
             }, 2000);
-
             matchedPairs++;
             startItem.dataset.connected = "true";
             endItem.dataset.connected = "true";
-
             startItem.querySelectorAll('.circle').forEach(circle => {
               circle.style.pointerEvents = 'none';
             });
@@ -367,20 +439,16 @@
             endItem.classList.add('error');
             startCircle.style.backgroundColor = 'red';
             endCircle.style.backgroundColor = 'red';
-
             const sItem = startItem;
             const eItem = endItem;
             const sCircle = startCircle;
             const eCircle = endCircle;
             const line = lineCopy;
-
             setTimeout(() => {
               sCircle.style.backgroundColor = '#FFBC00';
               eCircle.style.backgroundColor = '#FFBC00';
-
               if (sItem) sItem.classList.remove('error');
               if (eItem) eItem.classList.remove('error');
-
               if (line && line.parentElement) {
                 line.parentElement.removeChild(line);
               }
@@ -389,10 +457,14 @@
         } else {
           activeLine.remove();
         }
-
         activeLine = null;
         startItem = null;
-      });
+      }
+
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchend', handleEnd, { passive: false });
     }
 
     function showContinueButton() {
@@ -404,12 +476,16 @@
         btn.textContent = `Continue [${countdown}]`;
         if (countdown <= 0) {
           clearInterval(interval);
-          window.location.href = 'https://l3v145431.github.io/SKETCHES.github.io/';
+          if (window.parent && typeof window.parent.loadNextGame === 'function') {
+            window.parent.loadNextGame('https://l3v145431.github.io/SKETCHES.github.io/');
+          }
         }
       }, 1000);
       btn.addEventListener('click', () => {
         clearInterval(interval);
-        window.location.href = 'https://l3v145431.github.io/SKETCHES.github.io/';
+        if (window.parent && typeof window.parent.loadNextGame === 'function') {
+          window.parent.loadNextGame('https://l3v145431.github.io/SKETCHES.github.io/');
+        }
       });
     }
 
