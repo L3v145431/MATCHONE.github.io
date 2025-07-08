@@ -69,7 +69,7 @@
         font-size: 0.9rem;
       }
       .matching-wrapper {
-        padding: 0.5rem; /* 👈 Se redujo el padding en móvil */
+        padding: 1rem  !important;/* 👈 Se redujo el padding en móvil */
       }
       .game-body {
         margin-top: -4rem;
@@ -81,6 +81,11 @@
     align-items: flex-start; /* ⬅ Alinea el contenido arriba */
   }
     }
+    @media (max-width: 767px) {
+  .game-header {
+    margin-bottom: 1rem;
+  }
+}
     body {
       font-family: Helvetica, sans-serif;
       display: flex;
