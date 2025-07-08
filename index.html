@@ -36,57 +36,60 @@
       --global_color_fail: #FFA07A;
       --global_text_color: #000000;
     }
+
+    /* Estilos para dispositivos de escritorio */
     @media (min-width: 1025px) {
       :root {
         --scale: 1.2;
       }
+      /* Tamaños de fuente específicos para escritorio */
       .item-text {
-        font-size: 0.3rem;
+        font-size: 11px; /* Tamaño de fuente para escritorio */
       }
       .column-title {
-        font-size: 1rem;
+        font-size: 20px; /* Tamaño de fuente para escritorio */
       }
       h1 {
-        font-size: 1.3rem;
+        font-size: 24px; /* Tamaño de fuente para escritorio */
       }
     }
+
+    /* Estilos para tablets */
     @media (max-width: 1024px) and (min-width: 768px) {
       :root {
         --scale: 1;
       }
     }
+
+    /* Estilos para dispositivos móviles */
     @media (max-width: 767px) {
-  
       :root {
         --scale: 0.8;
       }
+      /* Tamaños de fuente específicos para móviles */
       .item-text {
-        font-size: 0.36rem !important;
+        font-size: 7px !important; /* Tamaño de fuente para móvil */
       }
       .column-title {
-        font-size: 0.7rem;
+        font-size: 5px; /* Tamaño de fuente para móvil */
       }
       h1 {
-        font-size: 0.9rem;
+        font-size: 18px; /* Tamaño de fuente para móvil */
       }
       .matching-wrapper {
-        padding: 1rem  !important;/* 👈 Se redujo el padding en móvil */
+        padding: 1rem !important; /* Se redujo el padding en móvil */
       }
       .game-body {
         margin-top: -4rem;
-        gap: 0.2rem; /* 👈 Se redujo el espacio entre columnas en móvil */
+        gap: 0.2rem; /* Se redujo el espacio entre columnas en móvil */
       }
-       .scaling-container {
-    height: auto; /* ⬅ Ya no fuerza centrado vertical */
-    padding-top: 1rem; /* ⬅ Empuja hacia arriba */
-    align-items: flex-start; /* ⬅ Alinea el contenido arriba */
-  }
+      .scaling-container {
+        height: auto; /* Ya no fuerza centrado vertical */
+        padding-top: 1rem; /* Empuja hacia arriba */
+        align-items: flex-start; /* Alinea el contenido arriba */
+      }
     }
-    @media (max-width: 767px) {
-  .game-header {
-    margin-bottom: 1rem;
-  }
-}
+
     body {
       font-family: Helvetica, sans-serif;
       display: flex;
@@ -148,7 +151,6 @@
     h1 {
       margin: 0;
       text-align: center;
-      font-size: 1rem;
       color: var(--global_text_color);
     }
     .game-body {
@@ -163,7 +165,6 @@
       flex-direction: column;
     }
     .column-title {
-      font-size: 0.8rem;
       margin-bottom: 0.3rem;
       text-align: center;
       user-select: none;
@@ -193,7 +194,6 @@
       margin-right: 0.2rem;
     }
     .item-text {
-      font-size: 0.5rem;
       text-align: left;
       flex: 1;
     }
@@ -330,15 +330,12 @@
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_a360c3c02abb4eca9a74cef121975027~mv2.png', text: 'We need to innovate, but do not know how or where to start.', matchId: 1 },
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_bbca18b6889b4c9c8e2f4d63b0598677~mv2.png', text: 'Our team lacks the skills to stay competitive in the AI era.', matchId: 2 }
       ];
-
       const solutions = [
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_2438abc3559840648506e9c06d2b18a4~mv2.png', text: 'WeSpark´s AI Product & Service Design and Development', matchId: 1 },
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_6b13c04d6ec14d3baa89fb7cf34c6453~mv2.png', text: 'WeSpark´s future-proof corporate training Courses', matchId: 2 },
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_3171991a742f4e1f8bf8adae46be81c5~mv2.png', text: 'WeSpark´s Next-Gen Learning Design & Education Services.', matchId: 3 }
       ];
-
       const data = column === 'left' ? items : solutions;
-
       for (let i = 0; i < numSquares; i++) {
         const item = document.createElement('div');
         item.className = 'item';
