@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Juego de Emparejamiento</title>
   <style>
+    /* Estilos CSS (sin cambios) */
     body, html {
       margin: 0;
       padding: 0;
@@ -36,7 +37,6 @@
       --global_color_fail: #FFA07A;
       --global_text_color: #000000;
     }
-
     /* Estilos para dispositivos de escritorio */
     @media (min-width: 1025px) {
       :root {
@@ -53,7 +53,6 @@
         font-size: 24px; /* Tamaño de fuente para escritorio */
       }
     }
-
     /* Estilos para tablets */
     @media (max-width: 1024px) and (min-width: 768px) {
       :root {
@@ -64,7 +63,6 @@
         font-size: 8px !important; /* Tamaño de fuente para móvil */
       }
     }
-
     /* Estilos para dispositivos móviles */
     @media (max-width: 767px) {
       :root {
@@ -93,7 +91,6 @@
         align-items: flex-start; /* Alinea el contenido arriba */
       }
     }
-
     body {
       font-family: Helvetica, sans-serif;
       display: flex;
@@ -253,8 +250,8 @@
     #continue-button {
       margin-top: 0.3rem;
       align-self: center;
-      padding: 0.2rem 0.7rem;
-      border-radius: 0.6rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.9rem;
       background-color: var(--global_button_color_main);
       border: none;
       font-weight: bold;
@@ -263,7 +260,7 @@
       position: relative;
       z-index: 10;
       color: var(--global_button_text_color);
-      font-size: 0.6rem;
+      font-size: 1.8vmin;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -315,7 +312,6 @@
     }
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
-
     function getCircleCenter(element) {
       const rect = element.getBoundingClientRect();
       return {
@@ -323,11 +319,9 @@
         y: rect.top + rect.height / 2
       };
     }
-
     function distance(a, b) {
       return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
     }
-
     function loadColumnItems(column, numSquares, columnElement) {
       const items = [
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_ae732a0ab6da45d5a1112865d70492cc~mv2.png', text: 'Our online course is outdated and not interactive enough.', matchId: 3 },
@@ -345,25 +339,25 @@
         item.className = 'item';
         item.dataset.matchId = data[i].matchId;
         item.dataset.connected = "false";
+        const circleInnerId = `circle-inner-${column}-${i}`;
         item.innerHTML = `
           <img src="${data[i].imageSrc}" alt="">
           <div class="item-text">${data[i].text}</div>
           <div class="circle-container">
             <div class="circle circle-outer"></div>
             <div class="circle circle-middle"></div>
-            <div class="circle circle-inner"></div>
+            <div class="circle circle-inner" id="${circleInnerId}"></div>
           </div>
         `;
         columnElement.appendChild(item);
       }
     }
-
     function setupGame() {
       const allItems = [...document.querySelectorAll('.item')];
       let activeLine = null;
       let startItem = null;
       let matchedPairs = 0;
-
+      let lines = [];
       allItems.forEach(item => {
         const circles = item.querySelectorAll('.circle');
         circles.forEach(circle => {
@@ -371,7 +365,6 @@
           circle.addEventListener('touchstart', handleCircleDown, { passive: false });
         });
       });
-
       function handleCircleDown(e) {
         if (e.target.closest('.item').dataset.connected === "true") return;
         e.preventDefault();
@@ -386,7 +379,6 @@
         activeLine.style.backgroundColor = 'gray';
         document.body.appendChild(activeLine);
       }
-
       function handleMove(e) {
         if (!startItem || !activeLine) return;
         const startCircle = startItem.querySelector('.circle-inner');
@@ -399,7 +391,6 @@
         activeLine.style.width = `${length}px`;
         activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
       }
-
       function handleEnd(e) {
         if (!startItem || !activeLine) return;
         const possibleTargets = allItems.filter(item =>
@@ -412,7 +403,6 @@
           const center = getCircleCenter(targetCircle);
           return distance(center, { x: clientX, y: clientY }) <= targetCircle.offsetWidth / 2;
         });
-
         if (endItem) {
           const startCircle = startItem.querySelector('.circle-inner');
           const endCircle = endItem.querySelector('.circle-inner');
@@ -426,7 +416,8 @@
           activeLine.style.width = `${len}px`;
           activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
           const lineCopy = activeLine;
-
+          lineCopy.dataset.startCircle = `#${startCircle.id}`;
+          lineCopy.dataset.endCircle = `#${endCircle.id}`;
           if (startItem.dataset.matchId === endItem.dataset.matchId) {
             lineCopy.style.backgroundColor = '#BEE395';
             startCircle.style.backgroundColor = '#BEE395';
@@ -445,7 +436,7 @@
             endItem.querySelectorAll('.circle').forEach(circle => {
               circle.style.pointerEvents = 'none';
             });
-
+            lines.push(lineCopy);
             if (matchedPairs === 3) {
               document.querySelectorAll('.progress-segment')[2].classList.add('filled');
               document.querySelectorAll('.progress-segment')[3].classList.add('flashing');
@@ -479,13 +470,30 @@
         activeLine = null;
         startItem = null;
       }
-
+      function updateLines() {
+        lines.forEach(line => {
+          const startCircle = document.querySelector(line.dataset.startCircle);
+          const endCircle = document.querySelector(line.dataset.endCircle);
+          if (startCircle && endCircle) {
+            const start = getCircleCenter(startCircle);
+            const end = getCircleCenter(endCircle);
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const len = Math.sqrt(dx ** 2 + dy ** 2);
+            line.style.left = `${start.x}px`;
+            line.style.top = `${start.y}px`;
+            line.style.width = `${len}px`;
+            line.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+          }
+        });
+      }
       document.addEventListener('mousemove', handleMove);
       document.addEventListener('touchmove', handleMove, { passive: false });
       document.addEventListener('mouseup', handleEnd);
       document.addEventListener('touchend', handleEnd, { passive: false });
+      window.addEventListener('resize', updateLines);
+      setInterval(updateLines, 100);
     }
-
     function showContinueButton() {
       const btn = document.getElementById('continue-button');
       btn.style.display = 'block';
@@ -507,7 +515,6 @@
         }
       });
     }
-
     window.onload = () => {
       loadColumnItems('left', 3, document.getElementById('left-column'));
       loadColumnItems('right', 3, document.getElementById('right-column'));
