@@ -42,15 +42,14 @@
       :root {
         --scale: 1.2;
       }
-      /* Tamaños de fuente específicos para escritorio */
       .item-text {
-        font-size: 11px; /* Tamaño de fuente para escritorio */
+        font-size: 11px;
       }
       .column-title {
-        font-size: 20px; /* Tamaño de fuente para escritorio */
+        font-size: 20px;
       }
       h1 {
-        font-size: 24px; /* Tamaño de fuente para escritorio */
+        font-size: 24px;
       }
     }
     /* Estilos para tablets */
@@ -58,38 +57,36 @@
       :root {
         --scale: 1;
       }
-       /* Tamaños de fuente específicos para móviles */
       .item-text {
-        font-size: 12px !important; /* Tamaño de fuente para móvil */
+        font-size: 12px !important;
       }
     }
-    
+
     /* Estilos para dispositivos móviles */
     @media (max-width: 767px) {
       :root {
         --scale: 0.8;
       }
-      /* Tamaños de fuente específicos para móviles */
       .item-text {
-        font-size: 6px !important; /* Tamaño de fuente para móvil */
+        font-size: 6px !important;
       }
       .column-title {
-        font-size: 5px; /* Tamaño de fuente para móvil */
+        font-size: 5px;
       }
       h1 {
-        font-size: 18px; /* Tamaño de fuente para móvil */
+        font-size: 18px;
       }
       .matching-wrapper {
-        padding: 1rem !important; /* Se redujo el padding en móvil */
+        padding: 1rem !important;
       }
       .game-body {
         margin-top: -4rem;
-        gap: 0.2rem; /* Se redujo el espacio entre columnas en móvil */
+        gap: 0.2rem;
       }
       .scaling-container {
-        height: auto; /* Ya no fuerza centrado vertical */
-        padding-top: 1rem; /* Empuja hacia arriba */
-        align-items: flex-start; /* Alinea el contenido arriba */
+        height: auto;
+        padding-top: 1rem;
+        align-items: flex-start;
       }
     }
     body {
@@ -175,7 +172,7 @@
     .item {
       position: relative;
       width: 100%;
-      height: 16%;
+      height: 30%;
       background-color: var(--global_button_color_main);
       border-radius: 1.2rem;
       display: flex;
@@ -269,23 +266,69 @@
       40%, 80% { transform: translateX(0.2rem); }
     }
     @media (max-width: 720px) and (min-width: 540px) {
-  .matching-wrapper .item-text {
-    font-size: 12px !important;
-  }
-
-  .matching-wrapper h1 {
-    font-size: 16px !important;
-  }
-
-  .matching-wrapper .column-title {
-    font-size: 19px !important;
-  }
-
-  #continue-button {
-    font-size: 10px !important;
-  }
-}
-
+      .matching-wrapper .item-text {
+        font-size: 12px !important;
+      }
+      .matching-wrapper h1 {
+        font-size: 16px !important;
+      }
+      .matching-wrapper .column-title {
+        font-size: 19px !important;
+      }
+      #continue-button {
+        font-size: 10px !important;
+      }
+    }
+    #example-button {
+      margin-top: 1rem;
+      align-self: center;
+      padding: 0.4rem 2rem;
+      border-radius: 0.9rem;
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+    #example-button:hover {
+      background-color: white;
+      color: black;
+      border: 2px solid black;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .modal-content img {
+      max-width: 90%;
+      max-height: 90%;
+     border-radius: 20px;
+    }
   </style>
 </head>
 <body>
@@ -313,9 +356,16 @@
             </div>
           </div>
           <button id="continue-button">Continue (10)</button>
+          <button id="example-button">Example</button>
         </div>
       </div>
       <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
+    </div>
+  </div>
+  <div id="example-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <img id="example-gif" src="https://static.wixstatic.com/media/a687f1_8b7619359a36416e992f5a1e0ed549b0~mv2.gif" alt="Example GIF">
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
@@ -331,6 +381,7 @@
     }
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
+
     function getCircleCenter(element) {
       const rect = element.getBoundingClientRect();
       return {
@@ -338,9 +389,11 @@
         y: rect.top + rect.height / 2
       };
     }
+
     function distance(a, b) {
       return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
     }
+
     function loadColumnItems(column, numSquares, columnElement) {
       const items = [
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_ae732a0ab6da45d5a1112865d70492cc~mv2.png', text: 'Our online course is outdated and not interactive enough.', matchId: 3 },
@@ -371,6 +424,7 @@
         columnElement.appendChild(item);
       }
     }
+
     function setupGame() {
       const allItems = [...document.querySelectorAll('.item')];
       let activeLine = null;
@@ -384,6 +438,7 @@
           circle.addEventListener('touchstart', handleCircleDown, { passive: false });
         });
       });
+
       function handleCircleDown(e) {
         if (e.target.closest('.item').dataset.connected === "true") return;
         e.preventDefault();
@@ -398,6 +453,7 @@
         activeLine.style.backgroundColor = 'gray';
         document.body.appendChild(activeLine);
       }
+
       function handleMove(e) {
         if (!startItem || !activeLine) return;
         const startCircle = startItem.querySelector('.circle-inner');
@@ -410,6 +466,7 @@
         activeLine.style.width = `${length}px`;
         activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
       }
+
       function handleEnd(e) {
         if (!startItem || !activeLine) return;
         const possibleTargets = allItems.filter(item =>
@@ -422,6 +479,7 @@
           const center = getCircleCenter(targetCircle);
           return distance(center, { x: clientX, y: clientY }) <= targetCircle.offsetWidth / 2;
         });
+
         if (endItem) {
           const startCircle = startItem.querySelector('.circle-inner');
           const endCircle = endItem.querySelector('.circle-inner');
@@ -437,6 +495,7 @@
           const lineCopy = activeLine;
           lineCopy.dataset.startCircle = `#${startCircle.id}`;
           lineCopy.dataset.endCircle = `#${endCircle.id}`;
+
           if (startItem.dataset.matchId === endItem.dataset.matchId) {
             lineCopy.style.backgroundColor = '#BEE395';
             startCircle.style.backgroundColor = '#BEE395';
@@ -456,6 +515,7 @@
               circle.style.pointerEvents = 'none';
             });
             lines.push(lineCopy);
+
             if (matchedPairs === 3) {
               document.querySelectorAll('.progress-segment')[2].classList.add('filled');
               document.querySelectorAll('.progress-segment')[3].classList.add('flashing');
@@ -489,6 +549,7 @@
         activeLine = null;
         startItem = null;
       }
+
       function updateLines() {
         lines.forEach(line => {
           const startCircle = document.querySelector(line.dataset.startCircle);
@@ -506,6 +567,7 @@
           }
         });
       }
+
       document.addEventListener('mousemove', handleMove);
       document.addEventListener('touchmove', handleMove, { passive: false });
       document.addEventListener('mouseup', handleEnd);
@@ -513,6 +575,7 @@
       window.addEventListener('resize', updateLines);
       setInterval(updateLines, 100);
     }
+
     function showContinueButton() {
       const btn = document.getElementById('continue-button');
       btn.style.display = 'block';
@@ -534,6 +597,17 @@
         }
       });
     }
+
+    document.getElementById('example-button').addEventListener('click', function() {
+      const modal = document.getElementById('example-modal');
+      modal.style.display = 'block';
+    });
+
+    document.querySelector('.close').addEventListener('click', function() {
+      const modal = document.getElementById('example-modal');
+      modal.style.display = 'none';
+    });
+
     window.onload = () => {
       loadColumnItems('left', 3, document.getElementById('left-column'));
       loadColumnItems('right', 3, document.getElementById('right-column'));
