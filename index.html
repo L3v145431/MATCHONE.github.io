@@ -500,7 +500,7 @@
       let countdown = 10;
       const interval = setInterval(() => {
         countdown--;
-        btn.textContent = `Continue [${countdown}]`;
+        btn.textContent = `Continue (${countdown})`;
         if (countdown <= 0) {
           clearInterval(interval);
           if (window.parent && typeof window.parent.loadNextGame === 'function') {
