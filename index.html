@@ -1,117 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Innovation by Synthesis with Images</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Juego de Emparejamiento</title>
   <style>
+    /* Estilos CSS (sin cambios) */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Helvetica, sans-serif;
+    }
+    .scaling-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .content {
+      transform-origin: center center;
+      transform: scale(var(--scale));
+    }
     :root {
+      --scale: 1;
       --global_title_color: #FFFFFF;
-      --global_background_color: #000000;
+      --global_background_color: #e2e2e2;
       --global_button_text_color: #000000;
       --global_button_color_main: #FCD307;
       --global_button_color_secondary: #FFD700;
-      --global_color_frames: #E2E2E2;
+      --global_color_frames: #808080;
       --global_color_soft: #F4A460;
-      --global_color_pass: #1bb40d;
-      --global_color_fail: #ff3030;
-      --yellow: #FCD307;
-      --orange: #FFBC00;
-      --black: #000000;
-      --gray: #E2E2E2;
-      --white: #FFFFFF;
-      --green: #2E7D32;
-      --red: #C62828;
+      --global_color_pass: #90EE90;
+      --global_color_fail: #FFA07A;
+      --global_text_color: #000000;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* Estilos para dispositivos de escritorio */
+    @media (min-width: 1025px) {
+      :root {
+        --scale: 1.2;
+      }
+      /* Tamaños de fuente específicos para escritorio */
+      .item-text {
+        font-size: 11px; /* Tamaño de fuente para escritorio */
+      }
+      .column-title {
+        font-size: 20px; /* Tamaño de fuente para escritorio */
+      }
+      h1 {
+        font-size: 24px; /* Tamaño de fuente para escritorio */
+      }
+    }
+    /* Estilos para tablets */
+    @media (max-width: 1024px) and (min-width: 768px) {
+      :root {
+        --scale: 1;
+      }
+       /* Tamaños de fuente específicos para móviles */
+      .item-text {
+        font-size: 8px !important; /* Tamaño de fuente para móvil */
+      }
+    }
+    /* Estilos para dispositivos móviles */
+    @media (max-width: 767px) {
+      :root {
+        --scale: 0.8;
+      }
+      /* Tamaños de fuente específicos para móviles */
+      .item-text {
+        font-size: 6px !important; /* Tamaño de fuente para móvil */
+      }
+      .column-title {
+        font-size: 5px; /* Tamaño de fuente para móvil */
+      }
+      h1 {
+        font-size: 18px; /* Tamaño de fuente para móvil */
+      }
+      .matching-wrapper {
+        padding: 1rem !important; /* Se redujo el padding en móvil */
+      }
+      .game-body {
+        margin-top: -4rem;
+        gap: 0.2rem; /* Se redujo el espacio entre columnas en móvil */
+      }
+      .scaling-container {
+        height: auto; /* Ya no fuerza centrado vertical */
+        padding-top: 1rem; /* Empuja hacia arriba */
+        align-items: flex-start; /* Alinea el contenido arriba */
+      }
     }
     body {
       font-family: Helvetica, sans-serif;
-      background-color: var(--global_color_frames);
-      color: var(--global_background_color);
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: var(--global_background_color);
+      margin: 0;
+      padding: 0.2rem;
       height: 100vh;
-      line-height: 1.6;
-      position: relative;
-      overflow: hidden;
+      box-sizing: border-box;
     }
-    .game-wrapper {
-      width: 95vmin;
-      height: 95vmin;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .outer-container {
-      width: 100%;
-      height: 95%;
+    .matching-wrapper {
+      width: 95%;
+      max-width: 620px;
+      height: 80vmin;
+      max-height: 4000px;
+      background-color: var(--global_title_color);
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      padding: 5rem;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 1vmin;
-      box-sizing: border-box;
-      overflow: hidden;
+      user-select: none;
+      position: relative;
     }
     .game-container {
-      background-color: var(--global_title_color);
-      border-radius: 2vmin;
-      box-shadow: 0 0 2vmin rgba(0, 0, 0, 0.1);
-      padding: 1vmin;
-      text-align: center;
-      width: 100%;
-      height: 95%;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      box-sizing: border-box;
-      overflow: hidden;
     }
-    @media (max-width: 768px) {
-      .game-wrapper {
-        width: 100vmin;
-        height: 100vmin;
-      }
-      .outer-container {
-        height: 100%;
-      }
-      .game-container {
-        height: 100%;
-      }
-    }
-    .progress-container {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-bottom: 1vmin;
+    .game-header {
+      margin-bottom: 4rem;
     }
     .progress-bar {
       display: flex;
       justify-content: space-between;
-      gap: 0.3vmin;
-      width: 70%;
-      height: 1vmin;
-      background-color: transparent;
+      gap: 0.1rem;
+      width: 100%;
+      height: 0.3rem;
+      margin-bottom: 2rem;
     }
     .progress-segment {
       flex: 1;
-      background-color: #ddd;
+      background-color: var(--global_color_frames);
+      border-radius: 0.2rem;
       transition: background-color 0.3s ease;
-      height: 100%;
-    }
-    .progress-segment:first-child {
-      border-top-left-radius: 0.7vmin;
-      border-bottom-left-radius: 0.7vmin;
-    }
-    .progress-segment:last-child {
-      border-top-right-radius: 0.7vmin;
-      border-bottom-right-radius: 0.7vmin;
     }
     .progress-segment.filled {
       background: linear-gradient(to right, var(--global_button_color_main), var(--global_button_color_secondary));
@@ -120,615 +146,380 @@
       animation: flash 1s infinite;
     }
     @keyframes flash {
-      0%, 100% {
-        background-color: #ddd;
-      }
-      50% {
-        background-color: rgba(252, 211, 7, 0.7);
-      }
+      0%, 100% { background-color: var(--global_color_frames); }
+      50% { background-color: rgba(252, 211, 7, 0.7); }
     }
-    .images {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin: 2vmin auto;
-      width: 75%;
-      gap: 2vmin;
-      border: 0.1vmin solid #ddd;
-      padding: 1vmin;
-      border-radius: 0.7vmin;
-      box-shadow: 0.5vmin 0.5vmin 1vmin rgba(0, 0, 0, 0.2);
-    }
-    .image-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: grab;
-      user-select: none;
-      transition: transform 0.3s ease;
-      padding: 0.2vmin;
-    }
-    .image {
-      width: 9vmin;
-      height: 9vmin;
-      border: 0.4vmin solid var(--global_background_color);
-      border-radius: 1vmin;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      transition: border-color 0.3s;
-    }
-    .image.valid {
-      border-color: var(--global_color_pass);
-    }
-    .image.invalid {
-      border-color: var(--global_color_fail);
-    }
-    .image img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-    }
-    .image-text {
+    h1 {
+      margin: 0;
       text-align: center;
-      margin-top: 0.3vmin;
-      font-size: 1vmin;
-      font-weight: bold;
+      color: var(--global_text_color);
     }
-    .drop-zone {
+    .game-body {
+      flex: 1;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 1vmin 0;
-      width: 100%;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4rem;
     }
-    .drop-box-container {
+    .column {
+      width: 45%;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      margin: 0 0.5vmin;
     }
-    .drop-box {
-      width: 9vmin;
-      height: 9vmin;
-      border: 0.6vmin dashed #aaa3a3;
-      border-radius: 0.7vmin;
+    .column-title {
+      margin-bottom: 0.3rem;
+      text-align: center;
+      user-select: none;
+      color: var(--global_text_color);
+    }
+    .item {
+      position: relative;
+      width: 100%;
+      height: 16%;
+      background-color: var(--global_button_color_main);
+      border-radius: 1.2rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
+      padding: 0.2rem;
+      box-sizing: border-box;
+      margin-bottom: 0.3rem;
+      z-index: 2;
+    }
+    .item img {
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 0.2rem;
+    }
+    .item-text {
+      text-align: left;
+      flex: 1;
+    }
+    .circle-container {
+      position: absolute;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 3vmin;
-      position: relative;
-      flex-shrink: 0;
-      user-select: none;
+      z-index: 1;
+    }
+    #left-column .circle-container {
+      right: -0.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #right-column .circle-container {
+      left: -0.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .circle {
+      position: absolute;
+      border-radius: 50%;
       cursor: pointer;
-      transition: transform 0.3s, border-color 0.3s;
     }
-    .drop-box.empty {
-      border-color: #aaa3a3;
+    .circle-outer {
+      width: 1.3rem;
+      height: 1.3rem;
+      background-color: var(--global_title_color);
+      border: 0.1rem solid var(--global_text_color);
     }
-    .drop-box.filled {
-      border-color: var(--global_title_color);
+    .circle-middle {
+      width: 0.9rem;
+      height: 0.9rem;
+      background-color: var(--global_text_color);
     }
-    .drop-box.shake {
+    .circle-inner {
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: var(--global_button_color_secondary);
+      transition: background-color 0.5s ease;
+    }
+    .line {
+      position: absolute;
+      height: 0.2rem;
+      z-index: 3;
+      transform-origin: 0 0;
+      transition: background-color 0.5s ease;
+    }
+    .error {
       animation: shake 0.5s;
     }
-    .drop-box img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-    .sign {
-      font-size: 8vmin;
-      margin: 0 0.5vmin;
-      color: var(--global_button_color_main);
-      user-select: none;
-      flex-shrink: 0;
-    }
-    .result-box {
-      border: 0.2vmin solid var(--global_button_color_main);
-      background-color: #FFF8DC;
-      border-radius: 0.7vmin;
-      margin-left: 1vmin;
-      flex-shrink: 0;
-      width: 9.5vmin;
-      height: 9.5vmin;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .result-box img {
-      max-width: 9vmin;
-      max-height: 9vmin;
-      object-fit: contain;
-    }
-    .button {
-      margin: 1vmin;
-      padding: 1.07vmin;
-      background: var(--black);
-      color: var(--white);
+    #continue-button {
+      margin-top: 0.3rem;
+      align-self: center;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.9rem;
+      background-color: var(--global_button_color_main);
       border: none;
-      border-radius: 2vmin;
-      cursor: pointer;
-      font-size: 2vmin;
-      width: 16.5vmin;
-      transition: all 0.3s ease;
-    }
-    .button:hover {
-      background: var(--white);
-      color: var(--black);
-      border: 0.4vmin solid var(--black);
-      animation: hoverAnimation 0.3s ease;
-    }
-    @keyframes hoverAnimation {
-      from {
-        transform: scale(1);
-      }
-      to {
-        transform: scale(1.05);
-      }
-    }
-    .hint-text {
-      margin: 1vmin auto;
-      font-size: 1.5vmin;
-      color: #333;
-      min-height: 2vmin;
-    }
-    .hint-image-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 1vmin auto;
-      padding: 0.5vmin;
-      width: 100%;
-      height: auto;
-    }
-    .hint-image img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 1vmin;
-      box-shadow: 0 0.3vmin 0.7vmin rgba(0, 0, 0, 0.2);
-    }
-    .continue-button {
-      margin-top: 1vmin;
-      padding: 1vmin 2vmin;
-      font-size: 2vmin;
       font-weight: bold;
-      border-radius: 2vmin;
-      border: none;
-      background: var(--yellow);
-      color: var(--black);
       cursor: pointer;
       display: none;
-      width: 17vmin;
-      margin: 1vmin auto;
+      position: relative;
+      z-index: 10;
+      color: var(--global_button_text_color);
+      font-size: 1.8vmin;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-0.7vmin); }
-      40%, 80% { transform: translateX(0.7vmin); }
-    }
-    p {
-      font-size: 1.5vmin;
-      color: rgb(80, 77, 77);
-    }
-    h2 {
-      font-size: 2vmin;
-    }
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 1vmin;
-    }
-    .hint-canvas-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .hint-canvas {
-      background-color: var(--global_title_color);
-      border-radius: 1vmin;
-      padding: 2vmin;
-      position: relative;
-      max-width: 80%;
-      max-height: 80%;
-      overflow: auto;
-    }
-    .hint-canvas img {
-      max-width: 100%;
-      max-height: 70vh;
+      20%, 60% { transform: translateX(-0.2rem); }
+      40%, 80% { transform: translateX(0.2rem); }
     }
   </style>
 </head>
 <body>
-  <div class="game-wrapper">
-    <div class="outer-container">
-      <div class="game-container">
-        <div class="progress-container">
-          <div class="progress-bar" id="progress-bar">
-            <div class="progress-segment filled"></div>
-            <div class="progress-segment filled"></div>
-            <div class="progress-segment filled"></div>
-            <div class="progress-segment filled"></div>
-            <div class="progress-segment flashing"></div>
-            <div class="progress-segment"></div>
-            <div class="progress-segment"></div>
+  <div class="scaling-container">
+    <div class="content">
+      <div class="matching-wrapper">
+        <div class="game-container">
+          <div class="game-header">
+            <div class="progress-bar" id="progress-bar">
+              <div class="progress-segment filled"></div>
+              <div class="progress-segment filled"></div>
+              <div class="progress-segment flashing"></div>
+              <div class="progress-segment"></div>
+              <div class="progress-segment"></div>
+              <div class="progress-segment"></div>
+            </div>
+            <h1>Match the problems with our solutions.</h1>
           </div>
+          <div class="game-body">
+            <div class="column" id="left-column">
+              <div class="column-title">Problems</div>
+            </div>
+            <div class="column" id="right-column">
+              <div class="column-title">Solutions</div>
+            </div>
+          </div>
+          <button id="continue-button">Continue [10]</button>
         </div>
-        <h2>What you can expect from our Spark Team.</h2>
-        <p>Click and drag the right traits of our innovators:</p>
-        <br>
-        <div class="drop-zone" id="drop-zone">
-          <div class="drop-box-container">
-            <div class="drop-box empty" id="drop-box-1" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-          </div>
-          <span class="sign">+</span>
-          <div class="drop-box-container">
-            <div class="drop-box empty" id="drop-box-2" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-          </div>
-          <span class="sign">+</span>
-          <div class="drop-box-container">
-            <div class="drop-box empty" id="drop-box-3" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-          </div>
-          <span class="sign">+</span>
-          <div class="drop-box-container">
-            <div class="drop-box empty" id="drop-box-4" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-          </div>
-          <span class="sign">=</span>
-          <div class="result-box">
-            <img src="https://static.wixstatic.com/media/9c422e_1738f6701c4c414dbddba37729e29e07~mv2.png" alt="Result Image">
-          </div>
-        </div>
-        <br>
-        <div class="images" id="images"></div>
-        <div class="button-container">
-          <button class="button" onclick="showHintCanvas()">Hint</button>
-        </div>
-        <div class="hint-text" id="hint-text"></div>
-        <div id="hint-image-container" class="hint-image-container">
-          <p>Try using these images:</p>
-          <div class="hint-image"></div>
-        </div>
-        <button class="continue-button" id="continue-button" onclick="redirect()">Continue</button>
       </div>
+      <canvas id="confetti-canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vmin; height: 100vmin; pointer-events: none; z-index: 100;"></canvas>
     </div>
   </div>
-  <div id="hint-canvas-container" class="hint-canvas-container">
-    <div class="hint-canvas">
-      <img src="https://static.wixstatic.com/media/a687f1_af173dee2aa9497caa5d7623e469b329~mv2.png" alt="Hint Image">
-    </div>
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
   <script>
-    const imageData = [
-      { src: 'https://static.wixstatic.com/media/9c422e_4027fde4403c4df89509abf2263b6466~mv2.png', name: 'Talk & Do Nothing' },
-      { src: 'https://static.wixstatic.com/media/9c422e_188264a058dc481d8ad0f8c23d1695e5~mv2.png', name: 'Extraordinary Presence' },
-      { src: 'https://static.wixstatic.com/media/9c422e_fd16e57d914c4b7597b283fea2fc3504~mv2.png', name: 'Positive Mindset' },
-      { src: 'https://static.wixstatic.com/media/5d9fdb_33e8815debe4482b8e19917f76274b6d~mv2.png', name: 'Confused & lost' },
-      { src: 'https://static.wixstatic.com/media/9c422e_56a882fa6b884fdaa8abbbe260341518~mv2.png', name: 'Super Skilled' },
-      { src: 'https://static.wixstatic.com/media/9c422e_9dc5110bcb5c451b99c8bca11812f42b~mv2.png', name: 'Super Muscles' },
-      { src: 'https://static.wixstatic.com/media/9c422e_6a93b37adb9b48759b5ed4c701fd7ed6~mv2.png', name: 'Scared of Everything' },
-      { src: 'https://static.wixstatic.com/media/9c422e_177c15101cc74545b0fe14af049c8e5f~mv2.png', name: 'Pure theorist' },
-      { src: 'https://static.wixstatic.com/media/9c422e_5febf08c276f46b593d337d9a5cd46be~mv2.png', name: 'Holistic Vision' },
-      { src: 'https://static.wixstatic.com/media/9c422e_1803a5ed092843209a4262f95b060ba9~mv2.png', name: 'Good at Videogames' }
-    ];
-    let draggedImage = null;
-    let originalContainers = {};
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchElement = null;
-    let touchClone = null;
-
-    function allowDrop(ev) {
-      ev.preventDefault();
+    function adjustScale() {
+      const scalingContainer = document.querySelector('.scaling-container');
+      const content = document.querySelector('.content');
+      const scale = Math.min(
+        scalingContainer.clientWidth / content.scrollWidth,
+        scalingContainer.clientHeight / content.scrollHeight
+      );
+      document.documentElement.style.setProperty('--scale', scale);
     }
-
-    function drag(ev) {
-      draggedImage = ev.target;
-      ev.dataTransfer.setData("text", ev.target.id);
-    }
-
-    function endDrag(ev) {
-      if (draggedImage) {
-        draggedImage = null;
-      }
-    }
-
-    function drop(ev) {
-      ev.preventDefault();
-      const data = ev.dataTransfer.getData("text");
-      let dropBoxContainer = ev.target;
-      while (!dropBoxContainer.classList.contains('drop-box-container')) {
-        dropBoxContainer = dropBoxContainer.parentNode;
-      }
-      const dropBox = dropBoxContainer.querySelector('.drop-box');
-      processDrop(dropBox, document.getElementById(data));
-    }
-
-    function handleTouchStart(ev) {
-      if (ev.touches.length !== 1) return;
-
-      const touch = ev.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-
-      touchElement = document.elementFromPoint(touch.clientX, touch.clientY);
-      while (touchElement && !touchElement.classList.contains('image-container')) {
-        touchElement = touchElement.parentElement;
-      }
-
-      if (!touchElement) return;
-
-      ev.preventDefault();
-
-      touchClone = touchElement.cloneNode(true);
-      touchClone.style.position = 'fixed';
-      touchClone.style.left = `${touchStartX - touchElement.offsetWidth/2}px`;
-      touchClone.style.top = `${touchStartY - touchElement.offsetHeight/2}px`;
-      touchClone.style.margin = '0';
-      touchClone.style.zIndex = '1000';
-      touchClone.style.pointerEvents = 'none';
-      touchClone.style.transform = 'scale(1.1)';
-      touchClone.style.opacity = '0.8';
-      document.body.appendChild(touchClone);
-    }
-
-    function handleTouchMove(ev) {
-      if (!touchClone || !touchElement) return;
-
-      const touch = ev.touches[0];
-      const touchX = touch.clientX;
-      const touchY = touch.clientY;
-
-      touchClone.style.left = `${touchX - touchElement.offsetWidth/2}px`;
-      touchClone.style.top = `${touchY - touchElement.offsetHeight/2}px`;
-
-      ev.preventDefault();
-    }
-
-    function handleTouchEnd(ev) {
-      if (!touchClone || !touchElement) return;
-
-      const touch = ev.changedTouches[0];
-      const touchX = touch.clientX;
-      const touchY = touch.clientY;
-
-      const dropTarget = document.elementFromPoint(touchX, touchY);
-      let dropBoxContainer = dropTarget;
-      while (dropBoxContainer && !dropBoxContainer.classList.contains('drop-box-container')) {
-        dropBoxContainer = dropBoxContainer.parentElement;
-      }
-
-      if (dropBoxContainer) {
-        const dropBox = dropBoxContainer.querySelector('.drop-box');
-        processDrop(dropBox, touchElement);
-      } else {
-        const dropBoxes = Array.from({ length: 4 }, (_, i) => document.getElementById(`drop-box-${i + 1}`));
-        const emptyDropBox = dropBoxes.find(box => box.children.length === 0);
-        if (emptyDropBox) {
-          processDrop(emptyDropBox, touchElement);
-        } else {
-          const imagesContainer = originalContainers[touchElement.id];
-          if (imagesContainer) {
-            imagesContainer.appendChild(touchElement);
-          }
-        }
-      }
-
-      touchClone.remove();
-      touchClone = null;
-      touchElement = null;
-
-      ev.preventDefault();
-    }
-
-    function processDrop(dropBox, imageContainer) {
-      if (dropBox.children.length === 0) {
-        const imageText = imageContainer.querySelector('.image-text').textContent;
-        const imageElement = imageContainer.querySelector('.image');
-
-        if (['Extraordinary Presence', 'Positive Mindset', 'Super Skilled', 'Holistic Vision'].includes(imageText)) {
-          imageElement.classList.add('valid');
-          dropBox.appendChild(imageContainer);
-          setTimeout(() => {
-            imageElement.classList.remove('valid');
-          }, 1000);
-        } else {
-          imageElement.classList.add('invalid');
-          dropBox.appendChild(imageContainer);
-          dropBox.classList.add('shake');
-          setTimeout(() => {
-            dropBox.classList.remove('shake');
-            imageElement.classList.remove('invalid');
-            const imagesContainer = originalContainers[imageContainer.id];
-            imagesContainer.appendChild(imageContainer);
-            resetDropBox(dropBox.parentNode);
-          }, 1000);
-        }
-        dropBox.classList.remove('empty');
-        dropBox.classList.add('filled');
-        checkAllCorrect();
-      }
-    }
-
-    function resetDropBox(dropBoxContainer) {
-      const dropBox = dropBoxContainer.querySelector('.drop-box');
-      dropBox.innerHTML = '';
-      dropBox.classList.remove('filled');
-      dropBox.classList.add('empty');
-    }
-
-    function checkAllCorrect() {
-      const dropBoxes = Array.from({ length: 4 }, (_, i) => document.getElementById(`drop-box-${i + 1}`));
-      const validImages = ['Extraordinary Presence', 'Positive Mindset', 'Super Skilled', 'Holistic Vision'];
-      const allCorrect = dropBoxes.every(dropBox => {
-        const imageTextElement = dropBox.querySelector('.image-text');
-        return imageTextElement && validImages.includes(imageTextElement.textContent);
-      });
-      if (allCorrect) {
-        launchConfetti();
-        setTimeout(showContinueButton, 1500);
-      }
-    }
-
-    function launchConfetti() {
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      const segments = document.querySelectorAll(".progress-segment");
-      segments.forEach((segment, index) => {
-        segment.classList.remove('flashing');
-        if (index < 5) {
-          segment.classList.add('filled');
-        }
-        if (index === 5) {
-          segment.classList.add('flashing');
-        }
-      });
-    }
-
-    function showContinueButton() {
-      const continueButton = document.getElementById('continue-button');
-      continueButton.style.display = 'block';
-      let countdown = 10;
-      continueButton.textContent = `Continue [${countdown}]`;
-      const countdownInterval = setInterval(() => {
-        countdown--;
-        continueButton.textContent = `Continue [${countdown}]`;
-        if (countdown <= 0) {
-          clearInterval(countdownInterval);
-          redirect();
-        }
-      }, 1000);
-    }
-
-    function redirect() {
-      window.location.href = 'https://l3v145431.github.io/logos.github.io/';
-    }
-
-    function showHintCanvas() {
-      const hintCanvasContainer = document.getElementById('hint-canvas-container');
-      hintCanvasContainer.style.display = 'flex';
-      hintCanvasContainer.onclick = function(event) {
-        if (event.target === hintCanvasContainer) {
-          hideHintCanvas();
-        }
+    window.addEventListener('resize', adjustScale);
+    window.addEventListener('load', adjustScale);
+    function getCircleCenter(element) {
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
       };
     }
-
-    function hideHintCanvas() {
-      const hintCanvasContainer = document.getElementById('hint-canvas-container');
-      hintCanvasContainer.style.display = 'none';
+    function distance(a, b) {
+      return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
     }
-
-    function renderImages() {
-      const imagesContainer = document.getElementById('images');
-      imagesContainer.innerHTML = '';
-      imageData.forEach((data, index) => {
-        const img = document.createElement('img');
-        img.src = data.src;
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'image-container';
-        imageContainer.id = `image-container-${index}`;
-        imageContainer.draggable = true;
-        imageContainer.addEventListener('dragstart', drag);
-        imageContainer.ondragend = endDrag;
-
-        imageContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
-        imageContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
-        imageContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-        const imageDiv = document.createElement('div');
-        imageDiv.className = 'image';
-        imageDiv.appendChild(img);
-        const textDiv = document.createElement('div');
-        textDiv.className = 'image-text';
-        textDiv.textContent = data.name;
-        imageContainer.appendChild(imageDiv);
-        imageContainer.appendChild(textDiv);
-        imageContainer.onclick = () => handleImageClickWithAnimation(imageContainer);
-        originalContainers[`image-container-${index}`] = imagesContainer;
-        imagesContainer.appendChild(imageContainer);
-      });
-
-      const dropBoxes = document.querySelectorAll('.drop-box');
-      dropBoxes.forEach(box => {
-        box.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-        box.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
-      });
+    function loadColumnItems(column, numSquares, columnElement) {
+      const items = [
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_ae732a0ab6da45d5a1112865d70492cc~mv2.png', text: 'Our online course is outdated and not interactive enough.', matchId: 3 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_a360c3c02abb4eca9a74cef121975027~mv2.png', text: 'We need to innovate, but do not know how or where to start.', matchId: 1 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_bbca18b6889b4c9c8e2f4d63b0598677~mv2.png', text: 'Our team lacks the skills to stay competitive in the AI era.', matchId: 2 }
+      ];
+      const solutions = [
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_2438abc3559840648506e9c06d2b18a4~mv2.png', text: 'WeSpark´s AI Product & Service Design and Development', matchId: 1 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_6b13c04d6ec14d3baa89fb7cf34c6453~mv2.png', text: 'WeSpark´s future-proof corporate training Courses', matchId: 2 },
+        { imageSrc: 'https://static.wixstatic.com/media/9c422e_3171991a742f4e1f8bf8adae46be81c5~mv2.png', text: 'WeSpark´s Next-Gen Learning Design & Education Services.', matchId: 3 }
+      ];
+      const data = column === 'left' ? items : solutions;
+      for (let i = 0; i < numSquares; i++) {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.dataset.matchId = data[i].matchId;
+        item.dataset.connected = "false";
+        const circleInnerId = `circle-inner-${column}-${i}`;
+        item.innerHTML = `
+          <img src="${data[i].imageSrc}" alt="">
+          <div class="item-text">${data[i].text}</div>
+          <div class="circle-container">
+            <div class="circle circle-outer"></div>
+            <div class="circle circle-middle"></div>
+            <div class="circle circle-inner" id="${circleInnerId}"></div>
+          </div>
+        `;
+        columnElement.appendChild(item);
+      }
     }
-
-    function handleImageClickWithAnimation(imageContainer) {
-      const dropBoxes = Array.from({ length: 4 }, (_, i) => document.getElementById(`drop-box-${i + 1}`));
-      const emptyDropBox = dropBoxes.find(box => box.children.length === 0);
-      if (!emptyDropBox) return;
-      const imageRect = imageContainer.getBoundingClientRect();
-      const dropRect = emptyDropBox.getBoundingClientRect();
-      const imageText = imageContainer.querySelector('.image-text').textContent;
-      const imageElement = imageContainer.querySelector('.image');
-      const clone = imageContainer.cloneNode(true);
-      clone.style.position = 'fixed';
-      clone.style.left = `${imageRect.left}px`;
-      clone.style.top = `${imageRect.top}px`;
-      clone.style.margin = '0';
-      clone.style.zIndex = '1000';
-      clone.style.transition = 'all 0.5s ease';
-      document.body.appendChild(clone);
-      setTimeout(() => {
-        clone.style.left = `${dropRect.left + (dropRect.width - imageRect.width) / 2}px`;
-        clone.style.top = `${dropRect.top + (dropRect.height - imageRect.height) / 2}px`;
-        clone.style.transform = 'scale(1.1)';
-      }, 0);
-      clone.addEventListener('transitionend', () => {
-        clone.remove();
-        if (['Extraordinary Presence', 'Positive Mindset', 'Super Skilled', 'Holistic Vision'].includes(imageText)) {
-          imageElement.classList.add('valid');
-          emptyDropBox.appendChild(imageContainer);
-          setTimeout(() => {
-            imageElement.classList.remove('valid');
-          }, 1000);
+    function setupGame() {
+      const allItems = [...document.querySelectorAll('.item')];
+      let activeLine = null;
+      let startItem = null;
+      let matchedPairs = 0;
+      let lines = [];
+      allItems.forEach(item => {
+        const circles = item.querySelectorAll('.circle');
+        circles.forEach(circle => {
+          circle.addEventListener('mousedown', handleCircleDown);
+          circle.addEventListener('touchstart', handleCircleDown, { passive: false });
+        });
+      });
+      function handleCircleDown(e) {
+        if (e.target.closest('.item').dataset.connected === "true") return;
+        e.preventDefault();
+        startItem = e.target.closest('.item');
+        const circle = e.target.closest('.circle');
+        const { x, y } = getCircleCenter(circle);
+        activeLine = document.createElement('div');
+        activeLine.className = 'line';
+        activeLine.style.left = `${x}px`;
+        activeLine.style.top = `${y}px`;
+        activeLine.style.width = '0px';
+        activeLine.style.backgroundColor = 'gray';
+        document.body.appendChild(activeLine);
+      }
+      function handleMove(e) {
+        if (!startItem || !activeLine) return;
+        const startCircle = startItem.querySelector('.circle-inner');
+        const { x: startX, y: startY } = getCircleCenter(startCircle);
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+        const length = Math.sqrt(dx ** 2 + dy ** 2);
+        activeLine.style.width = `${length}px`;
+        activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+      }
+      function handleEnd(e) {
+        if (!startItem || !activeLine) return;
+        const possibleTargets = allItems.filter(item =>
+          item !== startItem && item.dataset.connected !== "true"
+        );
+        const clientX = e.clientX || e.changedTouches[0].clientX;
+        const clientY = e.clientY || e.changedTouches[0].clientY;
+        const endItem = possibleTargets.find(item => {
+          const targetCircle = item.querySelector('.circle-outer');
+          const center = getCircleCenter(targetCircle);
+          return distance(center, { x: clientX, y: clientY }) <= targetCircle.offsetWidth / 2;
+        });
+        if (endItem) {
+          const startCircle = startItem.querySelector('.circle-inner');
+          const endCircle = endItem.querySelector('.circle-inner');
+          const start = getCircleCenter(startCircle);
+          const end = getCircleCenter(endCircle);
+          const dx = end.x - start.x;
+          const dy = end.y - start.y;
+          const len = Math.sqrt(dx ** 2 + dy ** 2);
+          activeLine.style.left = `${start.x}px`;
+          activeLine.style.top = `${start.y}px`;
+          activeLine.style.width = `${len}px`;
+          activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+          const lineCopy = activeLine;
+          lineCopy.dataset.startCircle = `#${startCircle.id}`;
+          lineCopy.dataset.endCircle = `#${endCircle.id}`;
+          if (startItem.dataset.matchId === endItem.dataset.matchId) {
+            lineCopy.style.backgroundColor = '#BEE395';
+            startCircle.style.backgroundColor = '#BEE395';
+            endCircle.style.backgroundColor = '#BEE395';
+            setTimeout(() => {
+              lineCopy.style.backgroundColor = '#FFBC00';
+              startCircle.style.backgroundColor = '#FFBC00';
+              endCircle.style.backgroundColor = '#FFBC00';
+            }, 2000);
+            matchedPairs++;
+            startItem.dataset.connected = "true";
+            endItem.dataset.connected = "true";
+            startItem.querySelectorAll('.circle').forEach(circle => {
+              circle.style.pointerEvents = 'none';
+            });
+            endItem.querySelectorAll('.circle').forEach(circle => {
+              circle.style.pointerEvents = 'none';
+            });
+            lines.push(lineCopy);
+            if (matchedPairs === 3) {
+              document.querySelectorAll('.progress-segment')[2].classList.add('filled');
+              document.querySelectorAll('.progress-segment')[3].classList.add('flashing');
+              confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+              showContinueButton();
+            }
+          } else {
+            lineCopy.style.backgroundColor = 'red';
+            startItem.classList.add('error');
+            endItem.classList.add('error');
+            startCircle.style.backgroundColor = 'red';
+            endCircle.style.backgroundColor = 'red';
+            const sItem = startItem;
+            const eItem = endItem;
+            const sCircle = startCircle;
+            const eCircle = endCircle;
+            const line = lineCopy;
+            setTimeout(() => {
+              sCircle.style.backgroundColor = '#FFBC00';
+              eCircle.style.backgroundColor = '#FFBC00';
+              if (sItem) sItem.classList.remove('error');
+              if (eItem) eItem.classList.remove('error');
+              if (line && line.parentElement) {
+                line.parentElement.removeChild(line);
+              }
+            }, 2000);
+          }
         } else {
-          imageElement.classList.add('invalid');
-          emptyDropBox.appendChild(imageContainer);
-          emptyDropBox.classList.add('shake');
-          setTimeout(() => {
-            emptyDropBox.classList.remove('shake');
-            imageElement.classList.remove('invalid');
-            const imagesContainer = originalContainers[imageContainer.id];
-            imagesContainer.appendChild(imageContainer);
-            resetDropBox(emptyDropBox.parentNode);
-          }, 1000);
+          activeLine.remove();
         }
-        emptyDropBox.classList.remove('empty');
-        emptyDropBox.classList.add('filled');
-        imageContainer.style.position = 'relative';
-        imageContainer.style.top = '0.7vmin';
-        checkAllCorrect();
-      }, { once: true });
+        activeLine = null;
+        startItem = null;
+      }
+      function updateLines() {
+        lines.forEach(line => {
+          const startCircle = document.querySelector(line.dataset.startCircle);
+          const endCircle = document.querySelector(line.dataset.endCircle);
+          if (startCircle && endCircle) {
+            const start = getCircleCenter(startCircle);
+            const end = getCircleCenter(endCircle);
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const len = Math.sqrt(dx ** 2 + dy ** 2);
+            line.style.left = `${start.x}px`;
+            line.style.top = `${start.y}px`;
+            line.style.width = `${len}px`;
+            line.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+          }
+        });
+      }
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchend', handleEnd, { passive: false });
+      window.addEventListener('resize', updateLines);
+      setInterval(updateLines, 100);
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      renderImages();
-
-      document.addEventListener('touchmove', (e) => {
-        if (touchClone) {
-          e.preventDefault();
+    function showContinueButton() {
+      const btn = document.getElementById('continue-button');
+      btn.style.display = 'block';
+      let countdown = 10;
+      const interval = setInterval(() => {
+        countdown--;
+        btn.textContent = `Continue [${countdown}]`;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          if (window.parent && typeof window.parent.loadNextGame === 'function') {
+            window.parent.loadNextGame('https://l3v145431.github.io/SKETCHES.github.io/');
+          }
         }
-      }, { passive: false });
-    });
+      }, 1000);
+      btn.addEventListener('click', () => {
+        clearInterval(interval);
+        if (window.parent && typeof window.parent.loadNextGame === 'function') {
+          window.parent.loadNextGame('https://l3v145431.github.io/SKETCHES.github.io/');
+        }
+      });
+    }
+    window.onload = () => {
+      loadColumnItems('left', 3, document.getElementById('left-column'));
+      loadColumnItems('right', 3, document.getElementById('right-column'));
+      setupGame();
+    };
   </script>
 </body>
 </html>
