@@ -60,9 +60,10 @@
       }
        /* Tamaños de fuente específicos para móviles */
       .item-text {
-        font-size: 8px !important; /* Tamaño de fuente para móvil */
+        font-size: 12px !important; /* Tamaño de fuente para móvil */
       }
     }
+    
     /* Estilos para dispositivos móviles */
     @media (max-width: 767px) {
       :root {
@@ -267,6 +268,24 @@
       20%, 60% { transform: translateX(-0.2rem); }
       40%, 80% { transform: translateX(0.2rem); }
     }
+    @media (max-width: 720px) and (min-width: 540px) {
+  .matching-wrapper .item-text {
+    font-size: 12px !important;
+  }
+
+  .matching-wrapper h1 {
+    font-size: 16px !important;
+  }
+
+  .matching-wrapper .column-title {
+    font-size: 19px !important;
+  }
+
+  #continue-button {
+    font-size: 10px !important;
+  }
+}
+
   </style>
 </head>
 <body>
