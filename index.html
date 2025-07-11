@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Juego de Emparejamiento</title>
   <style>
-    /* Estilos CSS (sin cambios) */
+    /* Existing styles remain unchanged */
     body, html {
       margin: 0;
       padding: 0;
@@ -37,7 +37,6 @@
       --global_color_fail: #FFA07A;
       --global_text_color: #000000;
     }
-    /* Estilos para dispositivos de escritorio */
     @media (min-width: 1025px) {
       :root {
         --scale: 1.2;
@@ -52,7 +51,6 @@
         font-size: 24px;
       }
     }
-    /* Estilos para tablets */
     @media (max-width: 1024px) and (min-width: 768px) {
       :root {
         --scale: 1;
@@ -61,8 +59,6 @@
         font-size: 12px !important;
       }
     }
-
-    /* Estilos para dispositivos móviles */
     @media (max-width: 767px) {
       :root {
         --scale: 0.8;
@@ -279,23 +275,40 @@
         font-size: 10px !important;
       }
     }
+    /* Estilos generales para el botón */
     #example-button {
       margin-top: 1rem;
       align-self: center;
-      padding: 0.4rem 2rem;
+      padding: 0.1rem 0.5rem;
       border-radius: 0.9rem;
       background-color: black;
       color: white;
       font-weight: bold;
       cursor: pointer;
       border: none;
-      font-size: 0.8rem;
+      font-size: 8px;
       transition: all 0.3s ease;
     }
     #example-button:hover {
       background-color: white;
       color: black;
-      border: 2px solid black;
+      border: 1px solid black;
+    }
+    /* Estilos específicos para desktop */
+    @media (min-width: 1025px) {
+      #example-button {
+        width: 98px;
+        height: 28px;
+        font-size: 12px;
+      }
+    }
+    /* Estilos específicos para iPhones y pantallas pequeñas */
+    @media (max-width: 767px) {
+      #example-button {
+        width: 65px;
+        height: 20px;
+        font-size: 8px;
+      }
     }
     .modal {
       display: none;
@@ -305,33 +318,83 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.712);
     }
     .modal-content {
       position: relative;
-      width: 100%;
       height: 100%;
       display: flex;
       justify-content: center;
+      width: 53%;
       align-items: center;
+    }
+    .modal-image-container {
+      position: relative;
+      text-align: center;
+      left: 305px;
     }
     .close {
       position: absolute;
-      top: 20px;
-      right: 30px;
-      color: white;
+      top: 4px;
+      right: 50px;
+      color: black;
       font-size: 35px;
       font-weight: bold;
       cursor: pointer;
+      z-index: 1001;
     }
     .modal-content img {
       max-width: 90%;
       max-height: 90%;
-     border-radius: 20px;
+      border-radius: 20px;
     }
+
+    /* New styles for modal on tablets and iPhones */
+    @media (max-width: 1024px) and (min-width: 768px) {
+      .modal-content {
+        width: 70%;
+      }
+      .modal-image-container {
+        left: 0;
+        text-align: center;
+      }
+      .close {
+        right: 10px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .modal-content {
+        width: 97%;
+      }
+      .modal-image-container {
+        left: 0;
+        text-align: center;
+      }
+      .close {
+        right: 30px;
+        font-size: 25px;
+      }
+    }
+     @media (max-width: 1024px) and (min-width: 768px) {
+    .modal-content {
+      width: 90%;
+    }
+
+    .modal-image-container {
+      left: 20px;
+      text-align: center;
+    }
+
+    .close {
+      right: 40px;
+      top: 2px;
+    }
+  }
   </style>
 </head>
 <body>
+  <!-- Existing HTML remains unchanged -->
   <div class="scaling-container">
     <div class="content">
       <div class="matching-wrapper">
@@ -364,12 +427,15 @@
   </div>
   <div id="example-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <img id="example-gif" src="https://static.wixstatic.com/media/a687f1_8b7619359a36416e992f5a1e0ed549b0~mv2.gif" alt="Example GIF">
+      <div class="modal-image-container">
+        <span class="close">&times;</span>
+        <img id="example-gif" src="https://static.wixstatic.com/media/a687f1_8b7619359a36416e992f5a1e0ed549b0~mv2.gif" alt="Example GIF">
+      </div>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
   <script>
+    // Existing JavaScript remains unchanged
     function adjustScale() {
       const scalingContainer = document.querySelector('.scaling-container');
       const content = document.querySelector('.content');
@@ -381,7 +447,6 @@
     }
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
-
     function getCircleCenter(element) {
       const rect = element.getBoundingClientRect();
       return {
@@ -389,11 +454,9 @@
         y: rect.top + rect.height / 2
       };
     }
-
     function distance(a, b) {
       return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
     }
-
     function loadColumnItems(column, numSquares, columnElement) {
       const items = [
         { imageSrc: 'https://static.wixstatic.com/media/9c422e_ae732a0ab6da45d5a1112865d70492cc~mv2.png', text: 'Our online course is outdated and not interactive enough.', matchId: 3 },
@@ -424,7 +487,6 @@
         columnElement.appendChild(item);
       }
     }
-
     function setupGame() {
       const allItems = [...document.querySelectorAll('.item')];
       let activeLine = null;
@@ -438,7 +500,6 @@
           circle.addEventListener('touchstart', handleCircleDown, { passive: false });
         });
       });
-
       function handleCircleDown(e) {
         if (e.target.closest('.item').dataset.connected === "true") return;
         e.preventDefault();
@@ -453,7 +514,6 @@
         activeLine.style.backgroundColor = 'gray';
         document.body.appendChild(activeLine);
       }
-
       function handleMove(e) {
         if (!startItem || !activeLine) return;
         const startCircle = startItem.querySelector('.circle-inner');
@@ -466,7 +526,6 @@
         activeLine.style.width = `${length}px`;
         activeLine.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
       }
-
       function handleEnd(e) {
         if (!startItem || !activeLine) return;
         const possibleTargets = allItems.filter(item =>
@@ -479,7 +538,6 @@
           const center = getCircleCenter(targetCircle);
           return distance(center, { x: clientX, y: clientY }) <= targetCircle.offsetWidth / 2;
         });
-
         if (endItem) {
           const startCircle = startItem.querySelector('.circle-inner');
           const endCircle = endItem.querySelector('.circle-inner');
@@ -495,7 +553,6 @@
           const lineCopy = activeLine;
           lineCopy.dataset.startCircle = `#${startCircle.id}`;
           lineCopy.dataset.endCircle = `#${endCircle.id}`;
-
           if (startItem.dataset.matchId === endItem.dataset.matchId) {
             lineCopy.style.backgroundColor = '#BEE395';
             startCircle.style.backgroundColor = '#BEE395';
@@ -515,7 +572,6 @@
               circle.style.pointerEvents = 'none';
             });
             lines.push(lineCopy);
-
             if (matchedPairs === 3) {
               document.querySelectorAll('.progress-segment')[2].classList.add('filled');
               document.querySelectorAll('.progress-segment')[3].classList.add('flashing');
@@ -549,7 +605,6 @@
         activeLine = null;
         startItem = null;
       }
-
       function updateLines() {
         lines.forEach(line => {
           const startCircle = document.querySelector(line.dataset.startCircle);
@@ -567,7 +622,6 @@
           }
         });
       }
-
       document.addEventListener('mousemove', handleMove);
       document.addEventListener('touchmove', handleMove, { passive: false });
       document.addEventListener('mouseup', handleEnd);
@@ -575,10 +629,12 @@
       window.addEventListener('resize', updateLines);
       setInterval(updateLines, 100);
     }
-
     function showContinueButton() {
       const btn = document.getElementById('continue-button');
       btn.style.display = 'block';
+      // Hide the example button
+      const exampleButton = document.getElementById('example-button');
+      exampleButton.style.display = 'none';
       let countdown = 10;
       const interval = setInterval(() => {
         countdown--;
@@ -597,17 +653,14 @@
         }
       });
     }
-
     document.getElementById('example-button').addEventListener('click', function() {
       const modal = document.getElementById('example-modal');
-      modal.style.display = 'block';
+      modal.style.display = 'flex';
     });
-
     document.querySelector('.close').addEventListener('click', function() {
       const modal = document.getElementById('example-modal');
       modal.style.display = 'none';
     });
-
     window.onload = () => {
       loadColumnItems('left', 3, document.getElementById('left-column'));
       loadColumnItems('right', 3, document.getElementById('right-column'));
